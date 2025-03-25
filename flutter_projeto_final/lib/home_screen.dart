@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_projeto_final/bottom_nav.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<dynamic> noticias = [];
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -29,6 +32,15 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    // Aqui você pode adicionar a navegação para outras telas
+    print('Item $index selecionado');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,24 +51,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: noticias.length,
                 itemBuilder: (context, index) {
                   return Card(
-                    margin: EdgeInsets.all(10),
+                    margin: EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Image.network(noticias[index]['imagemUrl']),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(10),
                           child: Text(
                             noticias[index]['titulo'],
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 41, 109, 94)
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(noticias[index]['texto']),
                         ),
                       ],
                     ),
@@ -64,30 +73,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.newspaper),
-            label: 'Notícias',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.post_add),
-            label: 'Criar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.view_agenda),
-            label: 'Agendamentos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Perfil',
-          ),
-        ],
-        selectedItemColor: Color.fromARGB(255, 53, 138, 118),
-        onTap: (int index) {
-          print('Item $index');
-        },
+      bottomNavigationBar: BottomNav(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
     );
   }
