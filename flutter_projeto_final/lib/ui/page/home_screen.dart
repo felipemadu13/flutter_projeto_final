@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projeto_final/bottom_nav.dart';
+import 'package:flutter_projeto_final/ui/widgets/bottom_nav.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
