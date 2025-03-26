@@ -1,0 +1,38 @@
+{
+  "autores": [
+    {
+      "id": 1,
+      "nome": "Maurício Kubrusly",
+      "email": "mauriciok@email.com",
+      "senha": "123456",
+      "avatarUrl": "https://www.motiveacaopalestras.com.br/assets/images/palestrantes/624e60a42a691f5656e83b5bd227092c.jpg"
+    },
+    {
+      "id": 2,
+      "nome": "Márcio Canuto",
+      "email": "marciocanuto@email.com",
+      "senha": "123456",
+      "avatarUrl": "https://conteudo.imguol.com.br/c/esporte/7f/2019/12/23/marcio-canuto-jornalista-aposentado-em-entrevista-ao-uol-esporte-1577114231484_v2_1x1.jpg"
+    }
+  ],
+  "noticias": [
+    {
+      "id": 1,
+      "titulo": "Nova governança na educação começa com Pacto assinado por mais de 30 instituições",
+      "texto": "O Rio Grande do Norte ganhou um grande aliado na busca de melhorar os indicadores da educação no Estado, com a assinatura do “Pacto pela Educação”, instrumento assinado por mais de trinta instituições no evento de instalação do Gabinete de Articulação para a Efetivação da Política de Educação – Gaepe-RN, projeto capitaneado pelo Tribunal de Contas do Estado (TCE-RN) e Instituto Articule. O lançamento da iniciativa ocorreu na manhã desta segunda-feira, na sede da Procuradoria Geral de Justiça, em Natal, com apoio do Ministério Público do Rio Grande do Norte (MPRN).",
+      "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiasTCE/4802/site.JPG",
+      "categoria": "Educação",
+      "dataAgendamento": "2025-03-22T10:00:00",
+      "autorId": 1
+    },
+    {
+      "id": 2,
+      "titulo": "Órgãos de controle orientam gestores sobre custeio de festas e contratação de artistas",
+      "texto": "O Ministério Público do Estado do Rio Grande do Norte (MPRN), o Tribunal de Contas do Estado do Rio Grande do Norte (TCE/RN), por meio da Secretaria de Controle Externo (Secex), e o Ministério Público de Contas (MPCRN), publicaram uma Nota Técnica Conjunta para orientar os gestores públicos sobre as boas práticas e os parâmetros legais necessários para o uso de recursos públicos no custeio de festas, comemorações, shows e na contratação de artistas e bandas",
+      "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiasTCE/4798/festejos.jpg",
+      "categoria": "Contas",
+      "dataAgendamento": "2025-03-24T10:00:00",
+      "autorId": 2
+    }
+  ]
+}
