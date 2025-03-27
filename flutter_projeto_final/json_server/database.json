@@ -1,14 +1,14 @@
 {
   "autores": [
     {
-      "id": 1,
+      "id": "1",
       "nome": "Maurício Kubrusly",
       "email": "mauriciok@email.com",
       "senha": "123456",
       "avatarUrl": "https://www.motiveacaopalestras.com.br/assets/images/palestrantes/624e60a42a691f5656e83b5bd227092c.jpg"
     },
     {
-      "id": 2,
+      "id": "2",
       "nome": "Márcio Canuto",
       "email": "marciocanuto@email.com",
       "senha": "123456",
@@ -17,102 +17,207 @@
   ],
   "noticias": [
     {
-      "id": 1,
+      "id": "1",
       "titulo": "Nova governança na educação começa com Pacto assinado por mais de 30 instituições",
       "texto": "O Rio Grande do Norte ganhou um grande aliado na busca de melhorar os indicadores da educação no Estado, com a assinatura do “Pacto pela Educação”, instrumento assinado por mais de trinta instituições no evento de instalação do Gabinete de Articulação para a Efetivação da Política de Educação – Gaepe-RN, projeto capitaneado pelo Tribunal de Contas do Estado (TCE-RN) e Instituto Articule. O lançamento da iniciativa ocorreu na manhã desta segunda-feira, na sede da Procuradoria Geral de Justiça, em Natal, com apoio do Ministério Público do Rio Grande do Norte (MPRN).",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiasTCE/4802/site.JPG",
       "categoria": "Educação",
       "dataPublicacao": "2025-03-22T10:00:00",
-      "dataAgendamento": "2025-03-22T10:00:00",
+      "dataInicioValidade": "2025-03-22T10:00:00",
+      "dataFimValidade": "",
       "autorId": 1
     },
     {
-      "id": 2,
+      "id": "2",
       "titulo": "Órgãos de controle orientam gestores sobre custeio de festas e contratação de artistas",
       "texto": "O Ministério Público do Estado do Rio Grande do Norte (MPRN), o Tribunal de Contas do Estado do Rio Grande do Norte (TCE/RN), por meio da Secretaria de Controle Externo (Secex), e o Ministério Público de Contas (MPCRN), publicaram uma Nota Técnica Conjunta para orientar os gestores públicos sobre as boas práticas e os parâmetros legais necessários para o uso de recursos públicos no custeio de festas, comemorações, shows e na contratação de artistas e bandas",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiasTCE/4798/festejos.jpg",
       "categoria": "Contas",
-      "dataPublicacao": "",
-      "dataAgendamento": "2025-03-22T10:00:00",
+      "dataPublicacao": "2025-03-22T10:00:00",
+      "dataInicioValidade": "2025-03-23T10:00:00",
+      "dataFimValidade": "",
       "autorId": 2
     },
     {
-      "id": 3,
+      "id": "3",
       "titulo": "TCE participa de treinamento para o ciclo 2025 do Programa Nacional da Transparência Pública",
       "texto": "O Tribunal de Contas do Estado do Rio Grande do Norte (TCE/RN) participou, nos dias 20 e 21 deste mês, do treinamento do Programa Nacional de Transparência Pública (PNTP) para o levantamento do ciclo 2025. A iniciativa busca estabelecer padrões, oferecer diretrizes, incentivar boas práticas e monitorar a transparência na administração pública em todos os níveis e esferas de governo.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/7496/SW1hZ2VtMjAyNTAzMjUxMDA2MTk1NDhf.jpeg",
       "categoria": "Treinamento",
-      "dataAgendamento": "2025-03-24T10:00:00",
+      "dataPublicacao": "2025-03-24T10:00:00",
+      "dataInicioValidade": "2025-03-24T10:00:00",
+      "dataFimValidade": "",
       "autorId": 2
     },
     {
-      "id": 4,
+      "id": "4",
       "titulo": "Novo programa de incentivo à leitura é lançado em escolas públicas",
       "texto": "O governo do estado anunciou um novo programa de incentivo à leitura nas escolas públicas. A iniciativa visa fornecer acervos atualizados para bibliotecas e promover eventos literários com autores renomados.",
       "imagemUrl": "",
       "categoria": "Educação",
-      "dataAgendamento": "2025-03-25T09:00:00",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 1
     },
     {
-      "id": 5,
+      "id": "5",
       "titulo": "Fiscalização aponta irregularidades em contratos de obras públicas",
       "texto": "Uma auditoria realizada pelo Tribunal de Contas revelou uma série de irregularidades em contratos de obras públicas. Entre os principais problemas estão atrasos nos cronogramas e sobrepreço em materiais.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/7495/SW1hZ2VtMjAyNTAzMjUxMDI3NTYyMDZfMjMzMjUwMQ==.jpeg",
       "categoria": "Contas",
-      "dataAgendamento": "2025-03-26T14:00:00",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 2
     },
     {
-      "id": 6,
+      "id": "6",
       "titulo": "Projeto ambiental visa recuperação de áreas degradadas",
       "texto": "Um novo projeto ambiental foi lançado com o objetivo de recuperar áreas degradadas pela ação humana. A iniciativa contará com o plantio de árvores nativas e ações educativas para a população local.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4804/1.JPG",
       "categoria": "Meio Ambiente",
-      "dataAgendamento": "2025-03-27T08:30:00",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 1
     },
     {
-      "id": 7,
+      "id": "7",
       "titulo": "Governo anuncia investimentos em infraestrutura para 2025",
       "texto": "O governo estadual divulgou um pacote de investimentos para a infraestrutura, incluindo melhorias em rodovias, saneamento básico e mobilidade urbana. O projeto prevê a criação de mais de 5.000 empregos diretos.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4799/gaepe_(2).jpg",
       "categoria": "Infraestrutura",
-      "dataAgendamento": "2025-03-28T11:00:00",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 2
     },
     {
-      "id": 8,
+      "id": "8",
       "titulo": "Prefeitura lança campanha de vacinação contra gripe",
       "texto": "A Prefeitura anunciou o início da campanha de vacinação contra a gripe, voltada para idosos, gestantes, crianças e grupos de risco. Os postos de saúde estarão abertos em horários estendidos para atender a demanda.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4796/Licita%C3%A7%C3%B5es_e_Contratos_Administrativos__T.2_SITE.png",
       "categoria": "Saúde",
-      "dataAgendamento": "2025-03-29T09:00:00",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 1
     },
     {
-      "id": 9,
+      "id": "9",
       "titulo": "Feira de tecnologia traz inovações para o setor empresarial",
       "texto": "A Feira Nacional de Tecnologia acontece nesta semana, apresentando novidades em inteligência artificial, automação e soluções para empresas. O evento contará com palestras e workshops de especialistas do setor.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4794/Gaepe_2602.png",
       "categoria": "Tecnologia",
-      "dataAgendamento": "2025-03-30T10:30:00",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 2
     },
     {
-      "id": 10,
+      "id": "10",
       "titulo": "Setor de turismo cresce 15% no primeiro trimestre de 2025",
       "texto": "Dados divulgados pelo Ministério do Turismo mostram um crescimento de 15% no setor nos primeiros meses do ano. O aumento é impulsionado pela retomada dos eventos e maior fluxo de visitantes em destinos turísticos nacionais.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4790/resolu%C3%A7%C3%A3o.jpg",
       "categoria": "Turismo",
-      "dataAgendamento": "2025-03-31T14:00:00",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 1
+    },
+    {
+      "id": "4cdf",
+      "titulo": "Banana",
+      "texto": "Texto com banana e isso ai",
+      "imagemUrl": "fff",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
+      "autorId": 1
+    },
+    {
+      "id": "4554",
+      "titulo": "Banana 2",
+      "texto": "Texto da banana 2",
+      "imagemUrl": "fffff",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
+      "autorId": 1
+    },
+    {
+      "id": "78e8",
+      "titulo": "Banana 3",
+      "texto": "banana 3",
+      "imagemUrl": "fffff",
+      "dataPublicacao": "2025-03-26T09:00:00",
+      "dataInicioValidade": "2025-03-26T09:00:00",
+      "dataFimValidade": "2025-03-27T09:00:00",
+      "autorId": 1
+    },
+    {
+      "id": "10c5",
+      "titulo": "Banana 5",
+      "texto": "Banana 5",
+      "imagemUrl": "dddd",
+      "dataPublicacao": "2025-03-27T14:27:16.277428",
+      "dataInicioValidade": "2025-03-28T00:00:00.000",
+      "dataFimValidade": "2025-03-29T00:00:00.000"
+    },
+    {
+      "id": "4513",
+      "titulo": "Banana 6",
+      "texto": "fffffff",
+      "imagemUrl": "ff",
+      "dataPublicacao": "2025-03-27T14:27:34.342875",
+      "dataInicioValidade": "2025-03-27T14:27:34.342972",
+      "dataFimValidade": "2025-03-27T00:00:00.000"
+    },
+    {
+      "id": "a982",
+      "titulo": "Banana 10",
+      "texto": "fffffffffffff",
+      "imagemUrl": "gggg",
+      "dataPublicacao": "2025-03-27T14:33:36.705518",
+      "dataInicioValidade": "2025-03-27T14:33:36.707582",
+      "dataFimValidade": ""
+    },
+    {
+      "id": "06ec",
+      "titulo": "Banana11",
+      "texto": "Banananna",
+      "imagemUrl": null,
+      "dataPublicacao": "2025-03-27T16:09:20.249593",
+      "dataInicioValidade": "2025-03-27T00:00:00.000",
+      "dataFimValidade": "2025-03-28T00:00:00.000"
+    },
+    {
+      "id": "ed16",
+      "titulo": "Bnanan",
+      "texto": "999999",
+      "imagemUrl": "/data/user/0/imd.tce.turma5.flutter_projeto_final/cache/0a1f244b-c71a-4caa-91ac-ebe5c55c975b/1000000036.jpg",
+      "dataPublicacao": "2025-03-27T16:12:43.682271",
+      "dataInicioValidade": "2025-03-27T16:12:43.683342",
+      "dataFimValidade": ""
+    },
+    {
+      "id": "c9e6",
+      "titulo": "ggigigigig",
+      "texto": "jjjjjjjjjj",
+      "imagemUrl": "/data/user/0/imd.tce.turma5.flutter_projeto_final/cache/0039edf8-a552-4eeb-be8d-c75b29913c3c/1000000035.jpg",
+      "dataPublicacao": "2025-03-27T16:13:07.728771",
+      "dataInicioValidade": "2025-03-27T16:13:07.729124",
+      "dataFimValidade": ""
+    },
+    {
+      "id": "ff95",
+      "titulo": "bhhjjjjjjjjjj",
+      "texto": "iiiii",
+      "imagemUrl": "/data/user/0/imd.tce.turma5.flutter_projeto_final/cache/070b1cf1-22d3-4f42-a81d-e0ff702899e1/1000000034.jpg",
+      "dataPublicacao": "2025-03-27T16:29:42.810868",
+      "dataInicioValidade": "2025-03-27T16:29:42.813894",
+      "dataFimValidade": ""
     }
-
-
-
-
-
-
   ]
 }
