@@ -14,7 +14,8 @@ class _NewsFormScreen extends State<NewsFormScreen> {
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _textoController = TextEditingController();
   final TextEditingController _imagemUrlController = TextEditingController();
-  DateTime? _dataPublicacao;
+  DateTime? _dataInicioValidade;
+  DateTime? _dataFimValidade;
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -22,7 +23,9 @@ class _NewsFormScreen extends State<NewsFormScreen> {
         "titulo": _tituloController.text,
         "texto": _textoController.text,
         "imagemUrl": _imagemUrlController.text,
-        "dataPublicacao": _dataPublicacao?.toIso8601String() ?? DateTime.now().toIso8601String(),
+        "dataPublicacao": DateTime.now().toIso8601String(),
+        'dataInicioValidade': _dataInicioValidade?.toIso8601String() ?? DateTime.now().toIso8601String(),
+        'dataFimValidade': _dataFimValidade?.toIso8601String() ?? "",
       };
 
       final response = await http.post(
@@ -33,12 +36,12 @@ class _NewsFormScreen extends State<NewsFormScreen> {
 
       if (response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Notícia cadastrada com sucesso!')),
+          const SnackBar(content: Text('Notícia cadastrada com sucesso!')),
         );
         Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao cadastrar a notícia.')),
+          const SnackBar(content: Text('Erro ao cadastrar a notícia.')),
         );
       }
     }
@@ -48,10 +51,10 @@ class _NewsFormScreen extends State<NewsFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cadastrar Notícia'),
-        backgroundColor: Color.fromARGB(255, 41, 109, 94),
+        title: const Text('Cadastrar Notícia'),
+        backgroundColor: const Color.fromARGB(255, 41, 109, 94),
       ),
-      body: SingleChildScrollView( // Adicionado para evitar overflow
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
@@ -61,7 +64,7 @@ class _NewsFormScreen extends State<NewsFormScreen> {
               children: [
                 TextFormField(
                   controller: _tituloController,
-                  decoration: InputDecoration(labelText: 'Título'),
+                  decoration: const InputDecoration(labelText: 'Título'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira o título';
@@ -71,7 +74,7 @@ class _NewsFormScreen extends State<NewsFormScreen> {
                 ),
                 TextFormField(
                   controller: _textoController,
-                  decoration: InputDecoration(labelText: 'Texto'),
+                  decoration: const InputDecoration(labelText: 'Texto'),
                   maxLines: 5,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -82,7 +85,7 @@ class _NewsFormScreen extends State<NewsFormScreen> {
                 ),
                 TextFormField(
                   controller: _imagemUrlController,
-                  decoration: InputDecoration(labelText: 'URL da Imagem'),
+                  decoration: const InputDecoration(labelText: 'URL da Imagem'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira a URL da imagem';
@@ -90,17 +93,17 @@ class _NewsFormScreen extends State<NewsFormScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ajusta o espaçamento
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
                       child: Text(
-                        _dataPublicacao == null
-                            ? 'Data de Agendamento: Não selecionada'
-                            : 'Data de Agendamento: ${_dataPublicacao!.toLocal()}'.split(' ')[0],
-                        overflow: TextOverflow.ellipsis, // Trunca o texto se for muito longo
-                        style: TextStyle(fontSize: 14),
+                        _dataInicioValidade == null
+                            ? 'Início da Validade: Não selecionada'
+                            : 'Início da Validade: ${_dataInicioValidade!.toLocal()}'.split(' ')[0],
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ),
                     TextButton(
@@ -113,21 +116,51 @@ class _NewsFormScreen extends State<NewsFormScreen> {
                         );
                         if (selectedDate != null) {
                           setState(() {
-                            _dataPublicacao = selectedDate;
+                            _dataInicioValidade = selectedDate;
                           });
                         }
                       },
-                      child: Text('Selecionar Data'),
+                      child: const Text('Selecionar Início'),
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _dataFimValidade == null
+                            ? 'Fim da Validade: Não selecionada'
+                            : 'Fim da Validade: ${_dataFimValidade!.toLocal()}'.split(' ')[0],
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        final selectedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2100),
+                        );
+                        if (selectedDate != null) {
+                          setState(() {
+                            _dataFimValidade = selectedDate;
+                          });
+                        }
+                      },
+                      child: const Text('Selecionar Fim'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 41, 109, 94),
+                    backgroundColor: const Color.fromARGB(255, 41, 109, 94),
                   ),
-                  child: Text('Salvar Notícia'),
+                  child: const Text('Salvar Notícia'),
                 ),
               ],
             ),

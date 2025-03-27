@@ -155,6 +155,24 @@
       "dataInicioValidade": "2025-03-26T09:00:00",
       "dataFimValidade": "2025-03-27T09:00:00",
       "autorId": 1
+    },
+    {
+      "id": "10c5",
+      "titulo": "Banana 5",
+      "texto": "Banana 5",
+      "imagemUrl": "dddd",
+      "dataPublicacao": "2025-03-27T14:27:16.277428",
+      "dataInicioValidade": "2025-03-28T00:00:00.000",
+      "dataFimValidade": "2025-03-29T00:00:00.000"
+    },
+    {
+      "id": "4513",
+      "titulo": "Banana 6",
+      "texto": "fffffff",
+      "imagemUrl": "ff",
+      "dataPublicacao": "2025-03-27T14:27:34.342875",
+      "dataInicioValidade": "2025-03-27T14:27:34.342972",
+      "dataFimValidade": "2025-03-27T00:00:00.000"
     }
   ]
 }
