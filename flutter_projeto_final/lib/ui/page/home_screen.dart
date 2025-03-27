@@ -73,6 +73,57 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+  Future<void> _showDeleteConfirmationDialog(BuildContext context, int index) async {
+  final noticia = filteredNoticias[index];
+  final noticiaId = noticia['id']; // Supondo que cada notícia tenha um ID único
+
+  final confirm = await showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Confirmar Exclusão'),
+        content: const Text('Tem certeza de que deseja excluir esta notícia?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false); // Cancela a exclusão
+            },
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true); // Confirma a exclusão
+            },
+            child: const Text('Excluir'),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (confirm == true) {
+    await _deleteNoticia(noticiaId);
+  }
+}
+
+Future<void> _deleteNoticia(String noticiaId) async {
+  final response = await http.delete(Uri.parse('http://10.0.2.2:3000/noticias/$noticiaId'));
+
+  if (response.statusCode == 200) {
+    setState(() {
+      noticias.removeWhere((noticia) => noticia['id'] == noticiaId);
+      filteredNoticias.removeWhere((noticia) => noticia['id'] == noticiaId);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Notícia excluída com sucesso!')),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Falha ao excluir a notícia.')),
+    );
+  }
+}
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -145,13 +196,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(10),
-                          child: Text(
-                            filteredNoticias[index]['titulo'],
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 41, 109, 94),
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  filteredNoticias[index]['titulo'],
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 41, 109, 94),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () => _showDeleteConfirmationDialog(context, index),
+                              ),
+                            ],
                           ),
                         ),
                       ],
