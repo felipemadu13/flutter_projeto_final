@@ -22,6 +22,7 @@
       "texto": "O Rio Grande do Norte ganhou um grande aliado na busca de melhorar os indicadores da educação no Estado, com a assinatura do “Pacto pela Educação”, instrumento assinado por mais de trinta instituições no evento de instalação do Gabinete de Articulação para a Efetivação da Política de Educação – Gaepe-RN, projeto capitaneado pelo Tribunal de Contas do Estado (TCE-RN) e Instituto Articule. O lançamento da iniciativa ocorreu na manhã desta segunda-feira, na sede da Procuradoria Geral de Justiça, em Natal, com apoio do Ministério Público do Rio Grande do Norte (MPRN).",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiasTCE/4802/site.JPG",
       "categoria": "Educação",
+      "dataPublicacao": "2025-03-22T10:00:00",
       "dataAgendamento": "2025-03-22T10:00:00",
       "autorId": 1
     },
@@ -31,7 +32,8 @@
       "texto": "O Ministério Público do Estado do Rio Grande do Norte (MPRN), o Tribunal de Contas do Estado do Rio Grande do Norte (TCE/RN), por meio da Secretaria de Controle Externo (Secex), e o Ministério Público de Contas (MPCRN), publicaram uma Nota Técnica Conjunta para orientar os gestores públicos sobre as boas práticas e os parâmetros legais necessários para o uso de recursos públicos no custeio de festas, comemorações, shows e na contratação de artistas e bandas",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiasTCE/4798/festejos.jpg",
       "categoria": "Contas",
-      "dataAgendamento": "2025-03-24T10:00:00",
+      "dataPublicacao": "",
+      "dataAgendamento": "2025-03-22T10:00:00",
       "autorId": 2
     },
     {
@@ -47,7 +49,7 @@
       "id": 4,
       "titulo": "Novo programa de incentivo à leitura é lançado em escolas públicas",
       "texto": "O governo do estado anunciou um novo programa de incentivo à leitura nas escolas públicas. A iniciativa visa fornecer acervos atualizados para bibliotecas e promover eventos literários com autores renomados.",
-      "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/7497/SW1hZ2VtMjAyNTAzMjUxMTA2Mzc4OTVf.png",
+      "imagemUrl": "",
       "categoria": "Educação",
       "dataAgendamento": "2025-03-25T09:00:00",
       "autorId": 1
