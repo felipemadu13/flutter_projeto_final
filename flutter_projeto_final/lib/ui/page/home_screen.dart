@@ -65,9 +65,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         backgroundColor: Color.fromARGB(255, 41, 109, 94),
       ),
-      body: Center(
+      body: RefreshIndicator(
+        onRefresh: fetchNoticias, 
         child: filteredNoticias.isEmpty
-            ? CircularProgressIndicator()
+            ? Center(
+                child: CircularProgressIndicator(), 
+              )
             : ListView.builder(
                 itemCount: filteredNoticias.length,
                 itemBuilder: (context, index) {
