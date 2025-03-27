@@ -41,6 +41,13 @@ class _HomeScreenState extends State<HomeScreen> {
               return false;
             }
 
+            final inicioValidade = DateTime.parse(dataInicioValidade);
+
+            // Exclui notícias com dataInicioValidade superior à data atual
+            if (inicioValidade.isAfter(now)) {
+              return false;
+            }
+
             // Verifica se dataFimValidade é válida e se a notícia ainda é válida
             if (dataFimValidade != null && dataFimValidade.isNotEmpty) {
               final fimValidade = DateTime.parse(dataFimValidade);
