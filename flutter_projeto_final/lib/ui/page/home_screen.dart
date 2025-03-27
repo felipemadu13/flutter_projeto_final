@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (response.statusCode == 200) {
       setState(() {
         noticias = json.decode(utf8.decode(response.bodyBytes));
-        filteredNoticias = noticias; // Inicialmente, todas as notícias são exibidas
+        filteredNoticias = noticias; 
       });
     } else {
       throw Exception('Falha ao carregar as notícias');
@@ -48,9 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedIndex = index;
     });
-
-    // Aqui você pode adicionar a navegação para outras telas
-    print('Item $index selecionado');
   }
 
   @override
@@ -79,7 +76,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.network(filteredNoticias[index]['imagemUrl']),
+                        Image.network(
+                          filteredNoticias[index]['imagemUrl'] ?? '',
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              'assets/images/default_image.jpg',
+                              fit: BoxFit.cover,
+                            );
+                          },
+                          fit: BoxFit.cover,
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(10),
                           child: Text(
