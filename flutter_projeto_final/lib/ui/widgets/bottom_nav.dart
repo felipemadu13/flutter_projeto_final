@@ -11,7 +11,13 @@ class BottomNav extends StatelessWidget {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       currentIndex: currentIndex,
-      onTap: onTap,
+      onTap: (index) {
+        if (index == 2) {
+          Navigator.pushNamed(context, '/schedule');
+        } else {
+          onTap(index);
+        }
+      },
       selectedItemColor: Color.fromARGB(255, 53, 138, 118),
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(

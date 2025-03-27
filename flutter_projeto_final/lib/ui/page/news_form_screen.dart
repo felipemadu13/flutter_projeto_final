@@ -10,10 +10,10 @@ class NewsFormScreen extends StatefulWidget {
   const NewsFormScreen({super.key, this.noticia});
 
   @override
-  _NewsFormScreen createState() => _NewsFormScreen();
+  _NewsFormScreenState createState() => _NewsFormScreenState();
 }
 
-class _NewsFormScreen extends State<NewsFormScreen> {
+class _NewsFormScreenState extends State<NewsFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _textoController = TextEditingController();
