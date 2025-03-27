@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
         filteredNoticias = noticias; 
       });
     } else {
-      throw Exception('Falha ao carregar as notícias.');
+      throw Exception('Falha ao carregar as notícias');
     }
   }
 
@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: TextField(
           onChanged: _onSearch,
           decoration: InputDecoration(
-            hintText: 'Pesquisar notícias...',
+            hintText: 'Pesquisar notícias..',
             border: InputBorder.none,
             hintStyle: TextStyle(color: Colors.white70),
           ),
