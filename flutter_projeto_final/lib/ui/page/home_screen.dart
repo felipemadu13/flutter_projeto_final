@@ -124,6 +124,21 @@ Future<void> _deleteNoticia(String noticiaId) async {
   }
 }
 
+void _navigateToEditScreen(BuildContext context, Map<String, dynamic> noticia) async {
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => NewsFormScreen(
+        noticia: noticia, // Passa a notícia para a tela de edição
+      ),
+    ),
+  );
+
+  if (result == true) {
+    fetchNoticias(); // Atualiza a lista de notícias ao retornar
+  }
+}
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -208,6 +223,10 @@ Future<void> _deleteNoticia(String noticiaId) async {
                                     color: Color.fromARGB(255, 41, 109, 94),
                                   ),
                                 ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.edit, color: Colors.blue),
+                                onPressed: () => _navigateToEditScreen(context, filteredNoticias[index]),
                               ),
                               IconButton(
                                 icon: const Icon(Icons.delete, color: Colors.red),
