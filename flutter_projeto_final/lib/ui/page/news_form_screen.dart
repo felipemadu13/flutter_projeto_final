@@ -38,7 +38,9 @@ class _NewsFormScreen extends State<NewsFormScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Notícia cadastrada com sucesso!')),
         );
-        Navigator.pop(context);
+
+        // Atualiza a página anterior e navega para a aba "Notícias"
+        Navigator.pop(context, true);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Erro ao cadastrar a notícia.')),

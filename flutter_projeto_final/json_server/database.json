@@ -173,6 +173,15 @@
       "dataPublicacao": "2025-03-27T14:27:34.342875",
       "dataInicioValidade": "2025-03-27T14:27:34.342972",
       "dataFimValidade": "2025-03-27T00:00:00.000"
+    },
+    {
+      "id": "a982",
+      "titulo": "Banana 10",
+      "texto": "fffffffffffff",
+      "imagemUrl": "gggg",
+      "dataPublicacao": "2025-03-27T14:33:36.705518",
+      "dataInicioValidade": "2025-03-27T14:33:36.707582",
+      "dataFimValidade": ""
     }
   ]
 }

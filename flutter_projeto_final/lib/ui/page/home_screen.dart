@@ -76,7 +76,15 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const NewsFormScreen()),
-      );
+      ).then((result) {
+        if (result == true) {
+          // Atualiza as notícias ao retornar da tela de criação
+          fetchNoticias();
+          setState(() {
+            _selectedIndex = 0; // Volta para a aba "Notícias"
+          });
+        }
+      });
     }
   }
 
