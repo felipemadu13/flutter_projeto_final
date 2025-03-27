@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class NewsFormScreen extends StatefulWidget {
   const NewsFormScreen({super.key});
@@ -13,16 +15,27 @@ class _NewsFormScreen extends State<NewsFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _textoController = TextEditingController();
-  final TextEditingController _imagemUrlController = TextEditingController();
+  File? _selectedImage; // Armazena a imagem selecionada
   DateTime? _dataInicioValidade;
   DateTime? _dataFimValidade;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final noticia = {
         "titulo": _tituloController.text,
         "texto": _textoController.text,
-        "imagemUrl": _imagemUrlController.text,
+        "imagemUrl": _selectedImage != null ? _selectedImage!.path : null,
         "dataPublicacao": DateTime.now().toIso8601String(),
         'dataInicioValidade': _dataInicioValidade?.toIso8601String() ?? DateTime.now().toIso8601String(),
         'dataFimValidade': _dataFimValidade?.toIso8601String() ?? "",
@@ -85,15 +98,31 @@ class _NewsFormScreen extends State<NewsFormScreen> {
                     return null;
                   },
                 ),
-                TextFormField(
-                  controller: _imagemUrlController,
-                  decoration: const InputDecoration(labelText: 'URL da Imagem'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira a URL da imagem';
-                    }
-                    return null;
-                  },
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    if (_selectedImage != null)
+                      Expanded(
+                        child: Image.file(
+                          _selectedImage!,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Text('Erro ao carregar a imagem');
+                          },
+                        ),
+                      )
+                    else
+                      const Expanded(
+                        child: Text('Nenhuma imagem selecionada'),
+                      ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: _pickImage,
+                      child: const Text('Selecionar Imagem'),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 Row(

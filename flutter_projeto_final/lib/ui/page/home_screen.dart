@@ -135,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Image.network(
                           filteredNoticias[index]['imagemUrl'] ?? '',
                           errorBuilder: (context, error, stackTrace) {
+                            // Exibe uma imagem padrão se o caminho for inválido ou vazio
                             return Image.asset(
                               'assets/images/default_image.jpg',
                               fit: BoxFit.cover,
