@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
         filteredNoticias = noticias; 
       });
     } else {
-      throw Exception('Falha ao carregar as notícias');
+      throw Exception('Falha ao carregar as notícias.');
     }
   }
 
