@@ -50,17 +50,6 @@
       "autorId": 2
     },
     {
-      "id": "4",
-      "titulo": "Novo programa de incentivo à leitura é lançado em escolas públicas",
-      "texto": "O governo do estado anunciou um novo programa de incentivo à leitura nas escolas públicas. A iniciativa visa fornecer acervos atualizados para bibliotecas e promover eventos literários com autores renomados.",
-      "imagemUrl": "",
-      "categoria": "Educação",
-      "dataPublicacao": "2025-03-25T09:00:00",
-      "dataInicioValidade": "2025-03-25T09:00:00",
-      "dataFimValidade": "",
-      "autorId": 1
-    },
-    {
       "id": "5",
       "titulo": "Fiscalização aponta irregularidades em contratos de obras públicas",
       "texto": "Uma auditoria realizada pelo Tribunal de Contas revelou uma série de irregularidades em contratos de obras públicas. Entre os principais problemas estão atrasos nos cronogramas e sobrepreço em materiais.",
@@ -127,26 +116,6 @@
       "autorId": 1
     },
     {
-      "id": "4cdf",
-      "titulo": "Banana",
-      "texto": "Texto com banana e isso ai",
-      "imagemUrl": "fff",
-      "dataPublicacao": "2025-03-25T09:00:00",
-      "dataInicioValidade": "2025-03-25T09:00:00",
-      "dataFimValidade": "",
-      "autorId": 1
-    },
-    {
-      "id": "4554",
-      "titulo": "Banana 2",
-      "texto": "Texto da banana 2",
-      "imagemUrl": "fffff",
-      "dataPublicacao": "2025-03-25T09:00:00",
-      "dataInicioValidade": "2025-03-25T09:00:00",
-      "dataFimValidade": "",
-      "autorId": 1
-    },
-    {
       "id": "78e8",
       "titulo": "Banana 3",
       "texto": "banana 3",
@@ -173,51 +142,6 @@
       "dataPublicacao": "2025-03-27T14:27:34.342875",
       "dataInicioValidade": "2025-03-27T14:27:34.342972",
       "dataFimValidade": "2025-03-27T00:00:00.000"
-    },
-    {
-      "id": "a982",
-      "titulo": "Banana 10",
-      "texto": "fffffffffffff",
-      "imagemUrl": "gggg",
-      "dataPublicacao": "2025-03-27T14:33:36.705518",
-      "dataInicioValidade": "2025-03-27T14:33:36.707582",
-      "dataFimValidade": ""
-    },
-    {
-      "id": "06ec",
-      "titulo": "Banana11",
-      "texto": "Banananna",
-      "imagemUrl": null,
-      "dataPublicacao": "2025-03-27T16:09:20.249593",
-      "dataInicioValidade": "2025-03-27T00:00:00.000",
-      "dataFimValidade": "2025-03-28T00:00:00.000"
-    },
-    {
-      "id": "ed16",
-      "titulo": "Bnanan",
-      "texto": "999999",
-      "imagemUrl": "/data/user/0/imd.tce.turma5.flutter_projeto_final/cache/0a1f244b-c71a-4caa-91ac-ebe5c55c975b/1000000036.jpg",
-      "dataPublicacao": "2025-03-27T16:12:43.682271",
-      "dataInicioValidade": "2025-03-27T16:12:43.683342",
-      "dataFimValidade": ""
-    },
-    {
-      "id": "c9e6",
-      "titulo": "ggigigigig",
-      "texto": "jjjjjjjjjj",
-      "imagemUrl": "/data/user/0/imd.tce.turma5.flutter_projeto_final/cache/0039edf8-a552-4eeb-be8d-c75b29913c3c/1000000035.jpg",
-      "dataPublicacao": "2025-03-27T16:13:07.728771",
-      "dataInicioValidade": "2025-03-27T16:13:07.729124",
-      "dataFimValidade": ""
-    },
-    {
-      "id": "ff95",
-      "titulo": "bhhjjjjjjjjjj",
-      "texto": "iiiii",
-      "imagemUrl": "/data/user/0/imd.tce.turma5.flutter_projeto_final/cache/070b1cf1-22d3-4f42-a81d-e0ff702899e1/1000000034.jpg",
-      "dataPublicacao": "2025-03-27T16:29:42.810868",
-      "dataInicioValidade": "2025-03-27T16:29:42.813894",
-      "dataFimValidade": ""
     }
   ]
 }
