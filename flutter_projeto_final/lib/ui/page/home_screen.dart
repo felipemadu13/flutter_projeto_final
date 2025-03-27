@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projeto_final/ui/widgets/bottom_nav.dart';
+import 'package:flutter_projeto_final/ui/page/news_form_screen.dart'; // Import da tela de criação
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -23,31 +24,40 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> fetchNoticias() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/noticias'));
-    if (response.statusCode == 200) {
-      setState(() {
-        noticias = json.decode(utf8.decode(response.bodyBytes));
-        filteredNoticias = noticias; 
-      });
-    } else {
-      throw Exception('Falha ao carregar as notícias.');
-    }
-  }
-
-  void _onSearch(String query) {
+  final response = await http.get(Uri.parse('http://10.0.2.2:3000/noticias'));
+  if (response.statusCode == 200) {
     setState(() {
-      searchQuery = query.toLowerCase();
-      filteredNoticias = noticias
-          .where((noticia) =>
-              noticia['titulo'].toLowerCase().contains(searchQuery))
+      noticias = json.decode(utf8.decode(response.bodyBytes));
+
+      noticias = noticias
+          .where((noticia) => noticia['dataPublicacao'] != null && noticia['dataPublicacao'].isNotEmpty)
           .toList();
+
+      noticias.sort((a, b) {
+        final dateA = DateTime.parse(a['dataPublicacao']);
+        final dateB = DateTime.parse(b['dataPublicacao']);
+        return dateB.compareTo(dateA); 
+      });
+
+      filteredNoticias = noticias; 
     });
+  } else {
+    throw Exception('Falha ao carregar as notícias.');
   }
+}
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+
+    if (index == 1) {
+      // Navega para a tela de criação de notícias
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const NewsFormScreen()),
+      );
+    }
   }
 
   @override
@@ -55,27 +65,35 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: TextField(
-          onChanged: _onSearch,
-          decoration: InputDecoration(
+          onChanged: (query) {
+            setState(() {
+              searchQuery = query.toLowerCase();
+              filteredNoticias = noticias
+                  .where((noticia) =>
+                      noticia['titulo'].toLowerCase().contains(searchQuery))
+                  .toList();
+            });
+          },
+          decoration: const InputDecoration(
             hintText: 'Pesquisar notícias...',
             border: InputBorder.none,
             hintStyle: TextStyle(color: Colors.white70),
           ),
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color.fromARGB(255, 41, 109, 94),
+        backgroundColor: const Color.fromARGB(255, 41, 109, 94),
       ),
       body: RefreshIndicator(
         onRefresh: fetchNoticias, 
         child: filteredNoticias.isEmpty
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(), 
               )
             : ListView.builder(
                 itemCount: filteredNoticias.length,
                 itemBuilder: (context, index) {
                   return Card(
-                    margin: EdgeInsets.all(20),
+                    margin: const EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -93,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           padding: const EdgeInsets.all(10),
                           child: Text(
                             filteredNoticias[index]['titulo'],
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Color.fromARGB(255, 41, 109, 94),
