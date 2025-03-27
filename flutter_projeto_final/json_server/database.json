@@ -33,6 +33,84 @@
       "categoria": "Contas",
       "dataAgendamento": "2025-03-24T10:00:00",
       "autorId": 2
+    },
+    {
+      "id": 3,
+      "titulo": "TCE participa de treinamento para o ciclo 2025 do Programa Nacional da Transparência Pública",
+      "texto": "O Tribunal de Contas do Estado do Rio Grande do Norte (TCE/RN) participou, nos dias 20 e 21 deste mês, do treinamento do Programa Nacional de Transparência Pública (PNTP) para o levantamento do ciclo 2025. A iniciativa busca estabelecer padrões, oferecer diretrizes, incentivar boas práticas e monitorar a transparência na administração pública em todos os níveis e esferas de governo.",
+      "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/7496/SW1hZ2VtMjAyNTAzMjUxMDA2MTk1NDhf.jpeg",
+      "categoria": "Treinamento",
+      "dataAgendamento": "2025-03-24T10:00:00",
+      "autorId": 2
+    },
+    {
+      "id": 4,
+      "titulo": "Novo programa de incentivo à leitura é lançado em escolas públicas",
+      "texto": "O governo do estado anunciou um novo programa de incentivo à leitura nas escolas públicas. A iniciativa visa fornecer acervos atualizados para bibliotecas e promover eventos literários com autores renomados.",
+      "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/7497/SW1hZ2VtMjAyNTAzMjUxMTA2Mzc4OTVf.png",
+      "categoria": "Educação",
+      "dataAgendamento": "2025-03-25T09:00:00",
+      "autorId": 1
+    },
+    {
+      "id": 5,
+      "titulo": "Fiscalização aponta irregularidades em contratos de obras públicas",
+      "texto": "Uma auditoria realizada pelo Tribunal de Contas revelou uma série de irregularidades em contratos de obras públicas. Entre os principais problemas estão atrasos nos cronogramas e sobrepreço em materiais.",
+      "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/7495/SW1hZ2VtMjAyNTAzMjUxMDI3NTYyMDZfMjMzMjUwMQ==.jpeg",
+      "categoria": "Contas",
+      "dataAgendamento": "2025-03-26T14:00:00",
+      "autorId": 2
+    },
+    {
+      "id": 6,
+      "titulo": "Projeto ambiental visa recuperação de áreas degradadas",
+      "texto": "Um novo projeto ambiental foi lançado com o objetivo de recuperar áreas degradadas pela ação humana. A iniciativa contará com o plantio de árvores nativas e ações educativas para a população local.",
+      "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4804/1.JPG",
+      "categoria": "Meio Ambiente",
+      "dataAgendamento": "2025-03-27T08:30:00",
+      "autorId": 1
+    },
+    {
+      "id": 7,
+      "titulo": "Governo anuncia investimentos em infraestrutura para 2025",
+      "texto": "O governo estadual divulgou um pacote de investimentos para a infraestrutura, incluindo melhorias em rodovias, saneamento básico e mobilidade urbana. O projeto prevê a criação de mais de 5.000 empregos diretos.",
+      "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4799/gaepe_(2).jpg",
+      "categoria": "Infraestrutura",
+      "dataAgendamento": "2025-03-28T11:00:00",
+      "autorId": 2
+    },
+    {
+      "id": 8,
+      "titulo": "Prefeitura lança campanha de vacinação contra gripe",
+      "texto": "A Prefeitura anunciou o início da campanha de vacinação contra a gripe, voltada para idosos, gestantes, crianças e grupos de risco. Os postos de saúde estarão abertos em horários estendidos para atender a demanda.",
+      "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4796/Licita%C3%A7%C3%B5es_e_Contratos_Administrativos__T.2_SITE.png",
+      "categoria": "Saúde",
+      "dataAgendamento": "2025-03-29T09:00:00",
+      "autorId": 1
+    },
+    {
+      "id": 9,
+      "titulo": "Feira de tecnologia traz inovações para o setor empresarial",
+      "texto": "A Feira Nacional de Tecnologia acontece nesta semana, apresentando novidades em inteligência artificial, automação e soluções para empresas. O evento contará com palestras e workshops de especialistas do setor.",
+      "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4794/Gaepe_2602.png",
+      "categoria": "Tecnologia",
+      "dataAgendamento": "2025-03-30T10:30:00",
+      "autorId": 2
+    },
+    {
+      "id": 10,
+      "titulo": "Setor de turismo cresce 15% no primeiro trimestre de 2025",
+      "texto": "Dados divulgados pelo Ministério do Turismo mostram um crescimento de 15% no setor nos primeiros meses do ano. O aumento é impulsionado pela retomada dos eventos e maior fluxo de visitantes em destinos turísticos nacionais.",
+      "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4790/resolu%C3%A7%C3%A3o.jpg",
+      "categoria": "Turismo",
+      "dataAgendamento": "2025-03-31T14:00:00",
+      "autorId": 1
     }
+
+
+
+
+
+
   ]
 }
