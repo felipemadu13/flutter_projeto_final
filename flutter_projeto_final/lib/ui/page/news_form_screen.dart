@@ -5,7 +5,9 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class NewsFormScreen extends StatefulWidget {
-  const NewsFormScreen({super.key});
+  final Map<String, dynamic>? noticia; // Notícia opcional para edição
+
+  const NewsFormScreen({super.key, this.noticia});
 
   @override
   _NewsFormScreen createState() => _NewsFormScreen();
@@ -15,9 +17,25 @@ class _NewsFormScreen extends State<NewsFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _textoController = TextEditingController();
-  File? _selectedImage; // Armazena a imagem selecionada
+  File? _selectedImage;
   DateTime? _dataInicioValidade;
   DateTime? _dataFimValidade;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Preenche os campos se estiver editando
+    if (widget.noticia != null) {
+      _tituloController.text = widget.noticia!['titulo'];
+      _textoController.text = widget.noticia!['texto'];
+      _dataInicioValidade = DateTime.parse(widget.noticia!['dataInicioValidade']);
+      _dataFimValidade = widget.noticia!['dataFimValidade'] != null &&
+              widget.noticia!['dataFimValidade'].isNotEmpty
+          ? DateTime.parse(widget.noticia!['dataFimValidade'])
+          : null;
+    }
+  }
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -35,28 +53,28 @@ class _NewsFormScreen extends State<NewsFormScreen> {
       final noticia = {
         "titulo": _tituloController.text,
         "texto": _textoController.text,
-        "imagemUrl": _selectedImage != null ? _selectedImage!.path : null,
-        "dataPublicacao": DateTime.now().toIso8601String(),
+        "imagemUrl": _selectedImage != null ? _selectedImage!.path : widget.noticia?['imagemUrl'],
+        "dataPublicacao": widget.noticia?['dataPublicacao'] ?? DateTime.now().toIso8601String(),
         'dataInicioValidade': _dataInicioValidade?.toIso8601String() ?? DateTime.now().toIso8601String(),
         'dataFimValidade': _dataFimValidade?.toIso8601String() ?? "",
       };
 
-      final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/noticias'),
-        headers: {"Content-Type": "application/json"},
-        body: json.encode(noticia),
-      );
+      final url = widget.noticia != null
+          ? 'http://10.0.2.2:3000/noticias/${widget.noticia!['id']}' // Atualiza notícia existente
+          : 'http://10.0.2.2:3000/noticias'; // Cria nova notícia
 
-      if (response.statusCode == 201) {
+      final response = await (widget.noticia != null
+          ? http.put(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: json.encode(noticia))
+          : http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: json.encode(noticia)));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Notícia cadastrada com sucesso!')),
+          SnackBar(content: Text(widget.noticia != null ? 'Notícia atualizada com sucesso!' : 'Notícia criada com sucesso!')),
         );
-
-        // Atualiza a página anterior e navega para a aba "Notícias"
         Navigator.pop(context, true);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erro ao cadastrar a notícia.')),
+          const SnackBar(content: Text('Falha ao salvar a notícia.')),
         );
       }
     }

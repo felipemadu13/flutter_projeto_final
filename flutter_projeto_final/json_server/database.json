@@ -50,15 +50,13 @@
       "autorId": 2
     },
     {
-      "id": "5",
-      "titulo": "Fiscalização aponta irregularidades em contratos de obras públicas",
+      "titulo": "Fiscalização",
       "texto": "Uma auditoria realizada pelo Tribunal de Contas revelou uma série de irregularidades em contratos de obras públicas. Entre os principais problemas estão atrasos nos cronogramas e sobrepreço em materiais.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/7495/SW1hZ2VtMjAyNTAzMjUxMDI3NTYyMDZfMjMzMjUwMQ==.jpeg",
-      "categoria": "Contas",
       "dataPublicacao": "2025-03-25T09:00:00",
-      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00.000",
       "dataFimValidade": "",
-      "autorId": 2
+      "id": "5"
     },
     {
       "id": "6",
