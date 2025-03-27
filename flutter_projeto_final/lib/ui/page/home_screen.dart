@@ -29,13 +29,33 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       noticias = json.decode(utf8.decode(response.bodyBytes));
 
+      final now = DateTime.now();
+
       noticias = noticias
-          .where((noticia) => noticia['dataPublicacao'] != null && noticia['dataPublicacao'].isNotEmpty)
+          .where((noticia) {
+            final dataInicioValidade = noticia['dataInicioValidade'];
+            final dataFimValidade = noticia['dataFimValidade'];
+
+            // Verifica se dataInicioValidade não é nula ou vazia
+            if (dataInicioValidade == null || dataInicioValidade.isEmpty) {
+              return false;
+            }
+
+            // Verifica se dataFimValidade é válida e se a notícia ainda é válida
+            if (dataFimValidade != null && dataFimValidade.isNotEmpty) {
+              final fimValidade = DateTime.parse(dataFimValidade);
+              if (fimValidade.isBefore(now)) {
+                return false;
+              }
+            }
+
+            return true;
+          })
           .toList();
 
       noticias.sort((a, b) {
-        final dateA = DateTime.parse(a['dataPublicacao']);
-        final dateB = DateTime.parse(b['dataPublicacao']);
+        final dateA = DateTime.parse(a['dataInicioValidade']);
+        final dateB = DateTime.parse(b['dataInicioValidade']);
         return dateB.compareTo(dateA); 
       });
 

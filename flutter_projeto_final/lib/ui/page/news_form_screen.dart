@@ -51,79 +51,86 @@ class _NewsFormScreen extends State<NewsFormScreen> {
         title: Text('Cadastrar Notícia'),
         backgroundColor: Color.fromARGB(255, 41, 109, 94),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: _tituloController,
-                decoration: InputDecoration(labelText: 'Título'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o título';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _textoController,
-                decoration: InputDecoration(labelText: 'Texto'),
-                maxLines: 5,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o texto';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _imagemUrlController,
-                decoration: InputDecoration(labelText: 'URL da Imagem'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira a URL da imagem';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16),
-              Row(
-                children: [
-                  Text(
-                    _dataPublicacao == null
-                        ? 'Data de Agendamento: Não selecionada'
-                        : 'Data de Agendamento: ${_dataPublicacao!.toLocal()}'.split(' ')[0],
-                  ),
-                  Spacer(),
-                  TextButton(
-                    onPressed: () async {
-                      final selectedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2100),
-                      );
-                      if (selectedDate != null) {
-                        setState(() {
-                          _dataPublicacao = selectedDate;
-                        });
-                      }
-                    },
-                    child: Text('Selecionar Data'),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _submitForm,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 41, 109, 94),
+      body: SingleChildScrollView( // Adicionado para evitar overflow
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: _tituloController,
+                  decoration: InputDecoration(labelText: 'Título'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira o título';
+                    }
+                    return null;
+                  },
                 ),
-                child: Text('Salvar Notícia'),
-              ),
-            ],
+                TextFormField(
+                  controller: _textoController,
+                  decoration: InputDecoration(labelText: 'Texto'),
+                  maxLines: 5,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira o texto';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _imagemUrlController,
+                  decoration: InputDecoration(labelText: 'URL da Imagem'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira a URL da imagem';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ajusta o espaçamento
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _dataPublicacao == null
+                            ? 'Data de Agendamento: Não selecionada'
+                            : 'Data de Agendamento: ${_dataPublicacao!.toLocal()}'.split(' ')[0],
+                        overflow: TextOverflow.ellipsis, // Trunca o texto se for muito longo
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        final selectedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2100),
+                        );
+                        if (selectedDate != null) {
+                          setState(() {
+                            _dataPublicacao = selectedDate;
+                          });
+                        }
+                      },
+                      child: Text('Selecionar Data'),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: _submitForm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 41, 109, 94),
+                  ),
+                  child: Text('Salvar Notícia'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

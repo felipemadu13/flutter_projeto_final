@@ -23,6 +23,8 @@
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiasTCE/4802/site.JPG",
       "categoria": "Educação",
       "dataPublicacao": "2025-03-22T10:00:00",
+      "dataInicioValidade": "2025-03-22T10:00:00",
+      "dataFimValidade": "",
       "autorId": 1
     },
     {
@@ -31,7 +33,9 @@
       "texto": "O Ministério Público do Estado do Rio Grande do Norte (MPRN), o Tribunal de Contas do Estado do Rio Grande do Norte (TCE/RN), por meio da Secretaria de Controle Externo (Secex), e o Ministério Público de Contas (MPCRN), publicaram uma Nota Técnica Conjunta para orientar os gestores públicos sobre as boas práticas e os parâmetros legais necessários para o uso de recursos públicos no custeio de festas, comemorações, shows e na contratação de artistas e bandas",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiasTCE/4798/festejos.jpg",
       "categoria": "Contas",
-      "dataPublicacao": "",
+      "dataPublicacao": "2025-03-22T10:00:00",
+      "dataInicioValidade": "2025-03-23T10:00:00",
+      "dataFimValidade": "",
       "autorId": 2
     },
     {
@@ -41,6 +45,8 @@
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/7496/SW1hZ2VtMjAyNTAzMjUxMDA2MTk1NDhf.jpeg",
       "categoria": "Treinamento",
       "dataPublicacao": "2025-03-24T10:00:00",
+      "dataInicioValidade": "2025-03-24T10:00:00",
+      "dataFimValidade": "",
       "autorId": 2
     },
     {
@@ -50,6 +56,8 @@
       "imagemUrl": "",
       "categoria": "Educação",
       "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 1
     },
     {
@@ -58,7 +66,9 @@
       "texto": "Uma auditoria realizada pelo Tribunal de Contas revelou uma série de irregularidades em contratos de obras públicas. Entre os principais problemas estão atrasos nos cronogramas e sobrepreço em materiais.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/7495/SW1hZ2VtMjAyNTAzMjUxMDI3NTYyMDZfMjMzMjUwMQ==.jpeg",
       "categoria": "Contas",
-      "dataPublicacao": "2025-03-25T14:00:00",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 2
     },
     {
@@ -67,7 +77,9 @@
       "texto": "Um novo projeto ambiental foi lançado com o objetivo de recuperar áreas degradadas pela ação humana. A iniciativa contará com o plantio de árvores nativas e ações educativas para a população local.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4804/1.JPG",
       "categoria": "Meio Ambiente",
-      "dataPublicacao": "2025-03-26T08:30:00",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 1
     },
     {
@@ -76,7 +88,9 @@
       "texto": "O governo estadual divulgou um pacote de investimentos para a infraestrutura, incluindo melhorias em rodovias, saneamento básico e mobilidade urbana. O projeto prevê a criação de mais de 5.000 empregos diretos.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4799/gaepe_(2).jpg",
       "categoria": "Infraestrutura",
-      "dataPublicacao": "2025-03-26T11:00:00",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 2
     },
     {
@@ -85,7 +99,9 @@
       "texto": "A Prefeitura anunciou o início da campanha de vacinação contra a gripe, voltada para idosos, gestantes, crianças e grupos de risco. Os postos de saúde estarão abertos em horários estendidos para atender a demanda.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4796/Licita%C3%A7%C3%B5es_e_Contratos_Administrativos__T.2_SITE.png",
       "categoria": "Saúde",
-      "dataPublicacao": "2025-03-26T09:00:00",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 1
     },
     {
@@ -94,7 +110,9 @@
       "texto": "A Feira Nacional de Tecnologia acontece nesta semana, apresentando novidades em inteligência artificial, automação e soluções para empresas. O evento contará com palestras e workshops de especialistas do setor.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4794/Gaepe_2602.png",
       "categoria": "Tecnologia",
-      "dataPublicacao": "2025-03-26T10:30:00",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 2
     },
     {
@@ -103,7 +121,9 @@
       "texto": "Dados divulgados pelo Ministério do Turismo mostram um crescimento de 15% no setor nos primeiros meses do ano. O aumento é impulsionado pela retomada dos eventos e maior fluxo de visitantes em destinos turísticos nacionais.",
       "imagemUrl": "https://www.tce.rn.gov.br/as/NoticiaImagem/4790/resolu%C3%A7%C3%A3o.jpg",
       "categoria": "Turismo",
-      "dataPublicacao": "2025-03-26T14:00:00",
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
       "autorId": 1
     },
     {
@@ -111,14 +131,30 @@
       "titulo": "Banana",
       "texto": "Texto com banana e isso ai",
       "imagemUrl": "fff",
-      "dataPublicacao": "2025-03-27T12:16:21.717041"
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
+      "autorId": 1
     },
     {
       "id": "4554",
       "titulo": "Banana 2",
       "texto": "Texto da banana 2",
       "imagemUrl": "fffff",
-      "dataPublicacao": "2025-03-27T12:17:59.579644"
+      "dataPublicacao": "2025-03-25T09:00:00",
+      "dataInicioValidade": "2025-03-25T09:00:00",
+      "dataFimValidade": "",
+      "autorId": 1
+    },
+    {
+      "id": "78e8",
+      "titulo": "Banana 3",
+      "texto": "banana 3",
+      "imagemUrl": "fffff",
+      "dataPublicacao": "2025-03-26T09:00:00",
+      "dataInicioValidade": "2025-03-26T09:00:00",
+      "dataFimValidade": "2025-03-27T09:00:00",
+      "autorId": 1
     }
   ]
 }
