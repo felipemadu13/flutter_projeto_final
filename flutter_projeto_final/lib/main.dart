@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projeto_final/ui/page/home_screen.dart';
-import 'package:flutter_projeto_final/ui/page/schedule_screen.dart';
+import 'package:flutter_projeto_final/ui/page/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,11 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const HomeScreen(),
-      routes: {
-        '/schedule': (context) => const ScheduleScreen(),
-      },
+      home: const LoginScreen(),
     );
   }
 }
-

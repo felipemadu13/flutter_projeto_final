@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_projeto_final/data/api_service.dart';
 import 'package:flutter_projeto_final/ui/widgets/bottom_nav.dart';
 import 'package:flutter_projeto_final/ui/page/news_form_screen.dart'; // Import da tela de criação
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final User user;
+
+  const HomeScreen({super.key, required this.user});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
