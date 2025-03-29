@@ -56,7 +56,8 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/images/logotipo_tce.svg
+    - assets\images\logotipo_tce.svg
+    - assets\images\logotipo_tce.png
     - assets\images\default_image.jpg
 
   # The following line ensures that the Material Icons font is
