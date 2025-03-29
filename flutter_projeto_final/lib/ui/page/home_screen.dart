@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchNoticias();
   }
 
+
   Future<void> fetchNoticias() async {
   final response = await http.get(Uri.parse('http://10.0.2.2:3000/noticias'));
   if (response.statusCode == 200) {
