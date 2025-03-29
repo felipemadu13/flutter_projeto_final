@@ -36,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
             final dataInicioValidade = noticia['dataInicioValidade'];
             final dataFimValidade = noticia['dataFimValidade'];
 
+
             // Verifica se dataInicioValidade não é nula ou vazia
             if (dataInicioValidade == null || dataInicioValidade.isEmpty) {
               return false;
