@@ -12,13 +12,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController cpfController = TextEditingController();
   final TextEditingController senhaController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool isLoading = false;
   String? errorMessage;
 
-  // Função de login sem Firebase Authentication, usando apenas Firestore
+
   void _login() async {
     setState(() {
       isLoading = true;
@@ -26,18 +26,18 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      String email = emailController.text;
+      String cpf = cpfController.text;
       String senha = senhaController.text;
 
-      // Buscar autor no Firestore com base no e-mail
+      // Buscar autor no Firestore com base no cpf
       QuerySnapshot querySnapshot = await _firestore
           .collection('autores')
-          .where('email', isEqualTo: email)
+          .where('cpf', isEqualTo: cpf)
           .get();
 
       if (querySnapshot.docs.isEmpty) {
         setState(() {
-          errorMessage = "E-mail ou senha incorretos!";
+          errorMessage = "CPF ou senha incorretos!";
           isLoading = false;
         });
         return;
@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Verifica se a senha corresponde à armazenada no Firestore
       if (senha != docSnapshot['senha']) {
         setState(() {
-          errorMessage = "E-mail ou senha incorretos!";
+          errorMessage = "CPF ou senha incorretos!";
           isLoading = false;
         });
         return;
@@ -85,9 +85,9 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 width: 280,
                 child: TextField(
-                  controller: emailController,
+                  controller: cpfController,
                   decoration: InputDecoration(
-                    labelText: "Digite seu e-mail",
+                    labelText: "Digite seu CPF",
                     border: OutlineInputBorder(),
                   ),
                 ),
