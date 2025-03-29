@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Autor {
-  final String idAutor;
+  final int idAutor;
   final String nome;
   final String cpf;
   final String email;
@@ -19,7 +19,7 @@ class Autor {
   factory Autor.fromFirestore(DocumentSnapshot docSnapshot) {
     final data = docSnapshot.data() as Map<String, dynamic>;
     return Autor(
-      idAutor: docSnapshot.id,
+      idAutor: data['idAutor'] ?? 0,
       nome: data['nome'] ?? '',
       cpf: data['cpf'] ?? '',
       email: data['email'] ?? '',
