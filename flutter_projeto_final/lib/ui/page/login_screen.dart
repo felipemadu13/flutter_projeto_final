@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_projeto_final/ui/page/home_screen.dart';
-import 'package:flutter_projeto_final/data/api_service.dart';
-import 'package:flutter_projeto_final/data/user_model.dart';
+import 'package:flutter_projeto_final/data/autor_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,27 +14,55 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController senhaController = TextEditingController();
-  final ApiService apiService = ApiService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool isLoading = false;
   String? errorMessage;
 
+  // Função de login sem Firebase Authentication, usando apenas Firestore
   void _login() async {
     setState(() {
       isLoading = true;
       errorMessage = null;
     });
 
-    User? user =
-    await apiService.login(emailController.text, senhaController.text);
+    try {
+      String email = emailController.text;
+      String senha = senhaController.text;
 
-    if (user != null) {
+      // Buscar autor no Firestore com base no e-mail
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('autores')
+          .where('email', isEqualTo: email)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        setState(() {
+          errorMessage = "E-mail ou senha incorretos!";
+          isLoading = false;
+        });
+        return;
+      }
+
+      DocumentSnapshot docSnapshot = querySnapshot.docs.first;
+      Autor autor = Autor.fromFirestore(docSnapshot);
+
+      // Verifica se a senha corresponde à armazenada no Firestore
+      if (senha != docSnapshot['senha']) {
+        setState(() {
+          errorMessage = "E-mail ou senha incorretos!";
+          isLoading = false;
+        });
+        return;
+      }
+
+      // Se as senhas corresponderem, navega para a tela inicial
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen(user: user)),
+        MaterialPageRoute(builder: (context) => HomeScreen(autor: autor)),
       );
-    } else {
+    } catch (e) {
       setState(() {
-        errorMessage = "E-mail ou senha incorretos!";
+        errorMessage = "Erro ao realizar o login!";
         isLoading = false;
       });
     }
@@ -94,8 +123,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     backgroundColor: Color(0xFF347D6B), // Cor do botão
                   ),
                   child: Text(
-                      "ENTRAR",
-                      style: TextStyle(color: Colors.white),
+                    "ENTRAR",
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),
