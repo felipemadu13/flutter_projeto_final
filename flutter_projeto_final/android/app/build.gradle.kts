@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "imd.tce.turma5.flutter_projeto_final"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

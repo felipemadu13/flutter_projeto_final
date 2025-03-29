@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projeto_final/data/api_service.dart';
+import 'package:flutter_projeto_final/data/user_model.dart';
 import 'package:flutter_projeto_final/ui/widgets/bottom_nav.dart';
 import 'package:flutter_projeto_final/ui/page/news_form_screen.dart'; // Import da tela de criação
 import 'package:http/http.dart' as http;
