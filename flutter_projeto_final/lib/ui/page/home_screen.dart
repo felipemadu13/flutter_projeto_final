@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projeto_final/data/autor_model.dart';
+import 'package:flutter_projeto_final/data/noticia_model.dart';
+import 'package:flutter_projeto_final/services/firestore_service.dart';
 import 'package:flutter_projeto_final/ui/widgets/bottom_nav.dart';
-import 'package:flutter_projeto_final/ui/page/news_form_screen.dart'; // Import da tela de criação
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class HomeScreen extends StatefulWidget {
-  final Autor autor;
-
-  const HomeScreen({super.key, required this.autor});
+  const HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<dynamic> noticias = [];
-  List<dynamic> filteredNoticias = [];
+  final FirestoreService _firestoreService = FirestoreService();
+  List<Noticia> noticias = [];
+  List<Noticia> filteredNoticias = [];
   int _selectedIndex = 0;
   String searchQuery = '';
 
@@ -26,143 +23,18 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchNoticias();
   }
 
-
   Future<void> fetchNoticias() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/noticias'));
-    if (response.statusCode == 200) {
-      setState(() {
-        noticias = json.decode(utf8.decode(response.bodyBytes));
-
-        final now = DateTime.now();
-
-        noticias = noticias
-            .where((noticia) {
-          final dataInicioValidade = noticia['dataInicioValidade'];
-          final dataFimValidade = noticia['dataFimValidade'];
-
-          // Verifica se dataInicioValidade não é nula ou vazia
-          if (dataInicioValidade == null || dataInicioValidade.isEmpty) {
-            return false;
-          }
-
-          final inicioValidade = DateTime.parse(dataInicioValidade);
-
-          // Exclui notícias com dataInicioValidade superior à data atual
-          if (inicioValidade.isAfter(now)) {
-            return false;
-          }
-
-          // Verifica se dataFimValidade é válida e se a notícia ainda é válida
-          if (dataFimValidade != null && dataFimValidade.isNotEmpty) {
-            final fimValidade = DateTime.parse(dataFimValidade);
-            if (fimValidade.isBefore(now)) {
-              return false;
-            }
-          }
-
-          return true;
-        })
-            .toList();
-
-        noticias.sort((a, b) {
-          final dateA = DateTime.parse(a['dataInicioValidade']);
-          final dateB = DateTime.parse(b['dataInicioValidade']);
-          return dateB.compareTo(dateA);
-        });
-
-        filteredNoticias = noticias;
-      });
-    } else {
-      throw Exception('Falha ao carregar as notícias.');
-    }
-  }
-
-  Future<void> _showDeleteConfirmationDialog(BuildContext context, int index) async {
-    final noticia = filteredNoticias[index];
-    final noticiaId = noticia['id']; // Supondo que cada notícia tenha um ID único
-
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirmar Exclusão'),
-          content: const Text('Tem certeza de que deseja excluir esta notícia?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false); // Cancela a exclusão
-              },
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true); // Confirma a exclusão
-              },
-              child: const Text('Excluir'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (confirm == true) {
-      await _deleteNoticia(noticiaId);
-    }
-  }
-
-  Future<void> _deleteNoticia(String noticiaId) async {
-    final response = await http.delete(Uri.parse('http://10.0.2.2:3000/noticias/$noticiaId'));
-
-    if (response.statusCode == 200) {
-      setState(() {
-        noticias.removeWhere((noticia) => noticia['id'] == noticiaId);
-        filteredNoticias.removeWhere((noticia) => noticia['id'] == noticiaId);
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Notícia excluída com sucesso!')),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Falha ao excluir a notícia.')),
-      );
-    }
-  }
-
-  void _navigateToEditScreen(BuildContext context, Map<String, dynamic> noticia) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NewsFormScreen(
-          noticia: noticia, // Passa a notícia para a tela de edição
-        ),
-      ),
-    );
-
-    if (result == true) {
-      fetchNoticias(); // Atualiza a lista de notícias ao retornar
-    }
-  }
-
-  void _onItemTapped(int index) {
+    final result = await _firestoreService.fetchNoticias();
     setState(() {
-      _selectedIndex = index;
+      noticias = result;
+      filteredNoticias = noticias;
     });
+  }
 
-    if (index == 1) {
-      // Navega para a tela de criação de notícias
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const NewsFormScreen()),
-      ).then((result) {
-        if (result == true) {
-          // Atualiza as notícias ao retornar da tela de criação
-          fetchNoticias();
-          setState(() {
-            _selectedIndex = 0; // Volta para a aba "Notícias"
-          });
-        }
-      });
-    }
+  /// Método para buscar a última imagem dinamicamente
+  Future<String> getImagemUrl(Noticia noticia) async {
+    final imagemUrl = await _firestoreService.fetchUltimaImagem(noticia.imagens);
+    return imagemUrl ?? 'assets/images/default_image.jpg';
   }
 
   @override
@@ -173,10 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onChanged: (query) {
             setState(() {
               searchQuery = query.toLowerCase();
-              filteredNoticias = noticias
-                  .where((noticia) =>
-                  noticia['titulo'].toLowerCase().contains(searchQuery))
-                  .toList();
+              filteredNoticias = noticias.where((n) => n.titulo.toLowerCase().contains(searchQuery)).toList();
             });
           },
           decoration: const InputDecoration(
@@ -191,64 +60,49 @@ class _HomeScreenState extends State<HomeScreen> {
       body: RefreshIndicator(
         onRefresh: fetchNoticias,
         child: filteredNoticias.isEmpty
-            ? const Center(
-          child: CircularProgressIndicator(),
-        )
+            ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
           itemCount: filteredNoticias.length,
           itemBuilder: (context, index) {
-            return Card(
-              margin: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.network(
-                    filteredNoticias[index]['imagemUrl'] ?? '',
-                    errorBuilder: (context, error, stackTrace) {
-                      // Exibe uma imagem padrão se o caminho for inválido ou vazio
-                      return Image.asset(
-                        'assets/images/default_image.jpg',
+            final noticia = filteredNoticias[index];
+
+            return FutureBuilder<String>(
+              future: getImagemUrl(noticia),
+              builder: (context, snapshot) {
+                final imagemUrl = snapshot.data ?? 'assets/images/default_image.jpg';
+
+                return Card(
+                  margin: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.network(
+                        imagemUrl,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset('assets/images/default_image.jpg', fit: BoxFit.cover);
+                        },
                         fit: BoxFit.cover,
-                      );
-                    },
-                    fit: BoxFit.cover,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            filteredNoticias[index]['titulo'],
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 41, 109, 94),
-                            ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          noticia.titulo,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 41, 109, 94),
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () => _navigateToEditScreen(context, filteredNoticias[index]),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _showDeleteConfirmationDialog(context, index),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             );
           },
         ),
       ),
-      bottomNavigationBar: BottomNav(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+      bottomNavigationBar: BottomNav(currentIndex: _selectedIndex, onTap: (index) {}),
     );
   }
 }

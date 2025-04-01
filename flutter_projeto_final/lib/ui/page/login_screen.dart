@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Se as senhas corresponderem, navega para a tela inicial
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen(autor: autor)),
+        MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     } catch (e) {
       setState(() {
