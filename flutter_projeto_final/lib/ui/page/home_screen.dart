@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_projeto_final/data/noticia_model.dart';
 import 'package:flutter_projeto_final/services/firestore_service.dart';
 import 'package:flutter_projeto_final/ui/widgets/bottom_nav.dart';
+import 'news_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -71,30 +72,40 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, snapshot) {
                 final imagemUrl = snapshot.data ?? 'assets/images/default_image.jpg';
 
-                return Card(
-                  margin: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Image.network(
-                        imagemUrl,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset('assets/images/default_image.jpg', fit: BoxFit.cover);
-                        },
-                        fit: BoxFit.cover,
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NewsDetailScreen(noticiaId: noticia.idnoticia),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          noticia.titulo,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(255, 41, 109, 94),
+                    );
+                  },
+                  child: Card(
+                    margin: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Image.network(
+                          imagemUrl,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset('assets/images/default_image.jpg', fit: BoxFit.cover);
+                          },
+                          fit: BoxFit.cover,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            noticia.titulo,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 41, 109, 94),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
