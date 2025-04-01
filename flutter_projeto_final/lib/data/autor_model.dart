@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Autor {
   final int idAutor;
-  final String nome;
+  final String Nome;
   final String cpf;
   final String email;
   final String avatarUrl;
 
   Autor({
     required this.idAutor,
-    required this.nome,
+    required this.Nome,
     required this.cpf,
     required this.email,
     required this.avatarUrl,
@@ -20,7 +20,7 @@ class Autor {
     final data = docSnapshot.data() as Map<String, dynamic>;
     return Autor(
       idAutor: data['idAutor'] ?? 0,
-      nome: data['nome'] ?? '',
+      Nome: data['Nome'] ?? '',
       cpf: data['cpf'] ?? '',
       email: data['email'] ?? '',
       avatarUrl: data['avatarUrl'] ?? '',
