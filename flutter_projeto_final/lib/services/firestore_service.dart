@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_projeto_final/data/autor_model.dart';
+import 'package:flutter_projeto_final/data/imagem_model.dart';
 import '../data/noticia_model.dart';
+import 'package:http/http.dart' as http;
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -44,6 +49,75 @@ class FirestoreService {
     return null;
   }
 
+  /// Método para gerar um idNoticia automaticamente
+  static int _idNoticiaCounter = 0;
+  Future<int> _generateIdNoticia() async {
+    var snapshot = await _db.collection('noticias').orderBy('idNoticia', descending: true).limit(1).get();
+    if (snapshot.docs.isNotEmpty) {
+      return snapshot.docs.first['idNoticia'] + 1;
+    }
+    return _idNoticiaCounter++;
+  }
+
+  /// Post notícia
+  String idUnico = DateTime.now().millisecondsSinceEpoch.toString();
+  Future<void> createNoticia(Noticia noticia, File? imageFile) async {
+    int idNoticia = await _generateIdNoticia();
+    List<int> imagensIds = [];
+
+    if (imageFile != null) {
+      String? imageUrl = await uploadImageToImgBB(imageFile);
+      if (imageUrl != null) {
+        int idImagem = DateTime.now().millisecondsSinceEpoch;
+
+        ImagemModel imagem = ImagemModel(
+          idImagem: idImagem,
+          arquivoImagem: imageUrl,
+          dataInclusao: DateTime.now(),
+        );
+
+        await _db.collection('imagens').add(imagem.toMap());
+        imagensIds.add(idImagem);
+      }
+    }
+
+    Noticia novaNoticia = Noticia(
+      idnoticia: idNoticia,
+      idAutor: noticia.idAutor,
+      titulo: noticia.titulo,
+      texto: noticia.texto,
+      imagens: imagensIds,
+      categorias: noticia.categorias,
+      dataInclusao: DateTime.now(),
+      dataInicioValidade: noticia.dataInicioValidade,
+      dataFimValidade: noticia.dataFimValidade,
+    );
+
+    await _db.collection('noticias').add(novaNoticia.toMap());
+  }
+
+  /// Put Noticia
+  Future<void> editNoticia(int idNoticia, Map<String, dynamic> novosDados) async {
+    try {
+      var querySnapshot = await _db
+          .collection('noticias')
+          .where('idNoticia', isEqualTo: idNoticia)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        var docId = querySnapshot.docs.first.id;
+        await _db.collection('noticias').doc(docId).update(novosDados);
+      } else {
+        throw Exception("Notícia não encontrada");
+      }
+    } catch (e) {
+      print("Erro ao editar notícia: $e");
+    }
+  }
+
+
+
 
   /// getByIdAutor
   Future<Autor?> getAutorById(int idAutor) async {
@@ -63,6 +137,25 @@ class FirestoreService {
     return null;
   }
 
+  /// Método para fazer upload de imagem para o ImgBB
+  Future<String?> uploadImageToImgBB(File imageFile) async {
+    const String apiKey = '58f3338a6851c75d3c2724fe800cdadc';
+    final Uri uri = Uri.parse('https://api.imgbb.com/1/upload?key=$apiKey');
+
+    final bytes = await imageFile.readAsBytes();
+    String base64Image = base64Encode(bytes);
+
+    final response = await http.post(
+      uri,
+      body: {'image': base64Image},
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['data']['url'];
+    }
+    return null;
+  }
 
 
 }

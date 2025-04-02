@@ -23,6 +23,7 @@ class Noticia {
     this.dataFimValidade,
   });
 
+  // Método para converter um Map em uma instância de Noticia
   factory Noticia.fromMap(Map<String, dynamic> data) {
     return Noticia(
       idnoticia: data['idNoticia'] ?? 0,
@@ -35,5 +36,21 @@ class Noticia {
       dataInicioValidade: (data['dataInicioValidade'] as Timestamp).toDate(),
       dataFimValidade: data['dataFimValidade'] != null ? (data['dataFimValidade'] as Timestamp).toDate() : null,
     );
+  }
+
+
+  // Método para converter uma instância de Noticia em um Map
+  Map<String, dynamic> toMap() {
+    return {
+      'idNoticia': idnoticia,
+      'idAutor': idAutor,
+      'titulo': titulo,
+      'texto': texto,
+      'imagens': imagens,
+      'categorias': categorias,
+      'dataInclusao': Timestamp.fromDate(dataInclusao),
+      'dataInicioValidade': Timestamp.fromDate(dataInicioValidade),
+      'dataFimValidade': dataFimValidade != null ? Timestamp.fromDate(dataFimValidade!) : null,
+    };
   }
 }
