@@ -56,11 +56,36 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
       setState(() {
-        errorMessage = "Erro ao realizar o login: ${e.toString()}";
         isLoading = false;
       });
+
+    if (e.code == 'invalid-credential') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('E-mail ou senha inválidos. Verifique e tente novamente.'),
+          ),
+        );
+      } else {
+        // Outros erros
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao realizar o login'),
+          ),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+
+      // Erro inesperado
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro inesperado: $e'),
+        ),
+      );
     }
   }
 
