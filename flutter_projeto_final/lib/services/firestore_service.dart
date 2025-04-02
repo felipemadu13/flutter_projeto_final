@@ -155,6 +155,36 @@ class FirestoreService {
     return null;
   }
 
+  /// Método para adicionar um novo autor ao Firestore
+  Future<void> addAutor(Autor autor) async {
+    try {
+      // Gerar um ID único para o autor
+      int idAutor = DateTime.now().millisecondsSinceEpoch;
+
+      // Criar um novo objeto Autor com o ID gerado
+      Autor novoAutor = Autor(
+        idAutor: idAutor,
+        Nome: autor.Nome,
+        cpf: autor.cpf,
+        email: autor.email,
+        avatarUrl: autor.avatarUrl,
+      );
+
+      // Adicionar o autor ao Firestore
+      await _db.collection('autores').add({
+        'idAutor': novoAutor.idAutor,
+        'Nome': novoAutor.Nome,
+        'cpf': novoAutor.cpf,
+        'email': novoAutor.email,
+        'avatarUrl': novoAutor.avatarUrl,
+      });
+    } catch (e) {
+      print("Erro ao adicionar autor: $e");
+      throw Exception("Erro ao adicionar autor");
+    }
+  }
+
+
   /// Método para fazer upload de imagem para o ImgBB
   Future<String?> uploadImageToImgBB(File imageFile) async {
     const String apiKey = '58f3338a6851c75d3c2724fe800cdadc';
