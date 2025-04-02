@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_projeto_final/ui/page/news_form_screen.dart';
 
 class BottomNav extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
 
-  const BottomNav({super.key, required this.currentIndex, required this.onTap,});
+  const BottomNav({super.key, required this.currentIndex, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,14 @@ class BottomNav extends StatelessWidget {
       type: BottomNavigationBarType.fixed,
       currentIndex: currentIndex,
       onTap: (index) {
-        if (index == 2) {
+        if (index == 1) {
+          // Navegar para a tela de criação de notícias
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const NewsFormScreen()),
+          );
+        } else if (index == 2) {
+          // Navegar para agendamentos
           Navigator.pushNamed(context, '/schedule');
         } else {
           onTap(index);

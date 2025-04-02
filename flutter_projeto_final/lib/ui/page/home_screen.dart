@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  /// Método para buscar a última imagem dinamicamente
   Future<String> getImagemUrl(Noticia noticia) async {
     final imagemUrl = await _firestoreService.fetchUltimaImagem(noticia.imagens);
     return imagemUrl ?? 'assets/images/default_image.jpg';
@@ -72,40 +71,53 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, snapshot) {
                 final imagemUrl = snapshot.data ?? 'assets/images/default_image.jpg';
 
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NewsDetailScreen(noticiaId: noticia.idnoticia),
-                      ),
-                    );
-                  },
-                  child: Card(
-                    margin: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.network(
+                return Card(
+                  margin: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NewsDetailScreen(noticiaId: noticia.idnoticia),
+                            ),
+                          );
+                        },
+                        child: Image.network(
                           imagemUrl,
                           errorBuilder: (context, error, stackTrace) {
                             return Image.asset('assets/images/default_image.jpg', fit: BoxFit.cover);
                           },
                           fit: BoxFit.cover,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(
-                            noticia.titulo,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 41, 109, 94),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                noticia.titulo,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromARGB(255, 41, 109, 94),
+                                ),
+                              ),
                             ),
-                          ),
+                            Row(
+                              children: [
+                                const Icon(Icons.edit, color: Colors.blue),
+                                const Icon(Icons.delete, color: Colors.red),
+                              ],
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 );
               },
