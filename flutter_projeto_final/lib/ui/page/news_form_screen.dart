@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_projeto_final/data/noticia_model.dart';
+import 'package:flutter_projeto_final/data/categoria_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter_projeto_final/services/firestore_service.dart';
@@ -19,36 +20,37 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _textoController = TextEditingController();
+  final TextEditingController _novaCategoriaController = TextEditingController();
   File? _selectedImage;
   DateTime? _dataInicioValidade;
   DateTime? _dataFimValidade;
   final FirestoreService _firestoreService = FirestoreService();
+  bool _criandoCategoria = false;
+  List<String> _categorias = [];
+  String? _categoriaSelecionada;
 
-  @override
   @override
   void initState() {
     super.initState();
+    _carregarCategorias();
     if (widget.noticia != null) {
       _tituloController.text = widget.noticia!['titulo'];
       _textoController.text = widget.noticia!['texto'];
-
-      // Verificar se a data é do tipo Timestamp ou DateTime diretamente
       if (widget.noticia!['dataInicioValidade'] is Timestamp) {
         _dataInicioValidade = (widget.noticia!['dataInicioValidade'] as Timestamp).toDate();
-      } else if (widget.noticia!['dataInicioValidade'] is DateTime) {
-        _dataInicioValidade = widget.noticia!['dataInicioValidade'];
       }
-
-      if (widget.noticia!['dataFimValidade'] != null) {
-        if (widget.noticia!['dataFimValidade'] is Timestamp) {
-          _dataFimValidade = (widget.noticia!['dataFimValidade'] as Timestamp).toDate();
-        } else if (widget.noticia!['dataFimValidade'] is DateTime) {
-          _dataFimValidade = widget.noticia!['dataFimValidade'];
-        }
+      if (widget.noticia!['dataFimValidade'] is Timestamp) {
+        _dataFimValidade = (widget.noticia!['dataFimValidade'] as Timestamp).toDate();
       }
     }
   }
 
+  Future<void> _carregarCategorias() async {
+    List<Categoria> categorias = await _firestoreService.fetchCategorias();
+    setState(() {
+      _categorias = categorias.map((categoria) => categoria.Nome).toList();
+    });
+  }
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -94,50 +96,30 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      final noticia = {
-        "titulo": _tituloController.text,
-        "texto": _textoController.text,
-        "imagemUrl": _selectedImage != null ? _selectedImage!.path : widget.noticia?['imagemUrl'],
-        "dataPublicacao": widget.noticia?['dataPublicacao'] ?? DateTime.now().toIso8601String(),
-        "dataInicioValidade": _dataInicioValidade != null ? Timestamp.fromDate(_dataInicioValidade!) : Timestamp.now(),
-        "dataFimValidade": _dataFimValidade != null ? Timestamp.fromDate(_dataFimValidade!) : null,
-      };
+      List<int> categoriasSelecionadas = _criandoCategoria
+          ? [await _firestoreService.createCategoria(_novaCategoriaController.text)]
+          : [await _firestoreService.getCategoriaIdByNome(_categoriaSelecionada!)];
 
-      try {
-        if (widget.noticia != null) {
-          await _firestoreService.editNoticia(widget.noticia!['id'], noticia);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Notícia atualizada com sucesso!')),
-          );
-        } else {
-          String idUnico = DateTime.now().millisecondsSinceEpoch.toString();
-          final novaNoticia = Noticia(
-            idnoticia: int.parse(idUnico),
-            idAutor: 1,
-            titulo: _tituloController.text,
-            texto: _textoController.text,
-            imagens: [],
-            categorias: [],
-            dataInclusao: DateTime.now(),
-            dataInicioValidade: _dataInicioValidade ?? DateTime.now(),
-            dataFimValidade: _dataFimValidade,
-          );
+      final noticia = Noticia(
+        idnoticia: DateTime.now().millisecondsSinceEpoch,
+        idAutor: 1,
+        titulo: _tituloController.text,
+        texto: _textoController.text,
+        imagens: [],
+        categorias: categoriasSelecionadas,
+        dataInclusao: DateTime.now(),
+        dataInicioValidade: _dataInicioValidade ?? DateTime.now(),
+        dataFimValidade: _dataFimValidade,
+      );
 
-          await _firestoreService.createNoticia(novaNoticia, _selectedImage);
+      await _firestoreService.createNoticia(noticia, _selectedImage, categoriasSelecionadas);
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Notícia criada com sucesso!')),
-          );
-        }
-        Navigator.pop(context, true);
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Falha ao salvar a notícia.')),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Notícia criada com sucesso!')),
+      );
+      Navigator.pop(context, true);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +143,18 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                   maxLines: 5,
                   validator: (value) => value == null || value.isEmpty ? 'Por favor, insira o texto' : null,
                 ),
-                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: _categoriaSelecionada,
+                  decoration: const InputDecoration(labelText: 'Categoria'),
+                  items: _categorias.map((categoria) {
+                    return DropdownMenuItem(value: categoria, child: Text(categoria));
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _categoriaSelecionada = value;
+                    });
+                  },
+                ),
                 ElevatedButton(
                   onPressed: () => _selectDateTime(context, true),
                   child: Text(_dataInicioValidade == null
@@ -174,12 +167,10 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                       ? 'Selecionar Data e Hora de Fim'
                       : 'Fim: ${DateFormat('dd/MM/yyyy HH:mm').format(_dataFimValidade!)}'),
                 ),
-                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: _pickImage,
                   child: const Text('Selecionar Imagem'),
                 ),
-                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: _submitForm,
                   child: const Text('Salvar Notícia'),
