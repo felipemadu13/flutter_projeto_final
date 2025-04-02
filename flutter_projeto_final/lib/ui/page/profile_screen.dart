@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_projeto_final/ui/page/home_screen.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -20,6 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController avatarUrlController = TextEditingController();
 
   bool isLoading = true;
+  File? _selectedImage;
 
   @override
   void initState() {
@@ -65,6 +68,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao carregar os dados do usuário: $e')),
+      );
+    }
+  }
+
+  Future<void> pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+        avatarUrlController.text = pickedFile.path; // Atualiza o campo com o caminho da imagem
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nenhuma imagem selecionada.')),
       );
     }
   }
@@ -121,6 +140,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    Center(
+                      child: CircleAvatar(
+                        radius: 50, // Tamanho do círculo
+                        backgroundImage: avatarUrlController.text.isNotEmpty
+                            ? FileImage(File(avatarUrlController.text)) // Exibe a imagem do avatar
+                            : const AssetImage('assets/images/default_image.png') as ImageProvider, // Imagem padrão
+                        backgroundColor: Colors.grey[200], // Cor de fundo caso não haja imagem
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     TextField(
                       controller: nomeController,
                       decoration: const InputDecoration(
@@ -152,6 +181,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       decoration: const InputDecoration(
                         labelText: 'Avatar URL',
                         border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    ElevatedButton(
+                      onPressed: pickImage,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 41, 109, 94),
+                      ),
+                      child: const Text(
+                        'Selecionar Imagem',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                     const SizedBox(height: 20),
