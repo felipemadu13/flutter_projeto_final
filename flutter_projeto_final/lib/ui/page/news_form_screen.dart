@@ -4,6 +4,7 @@ import 'package:flutter_projeto_final/data/noticia_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter_projeto_final/services/firestore_service.dart';
+import 'package:intl/intl.dart';
 
 class NewsFormScreen extends StatefulWidget {
   final Map<String, dynamic>? noticia;
@@ -24,17 +25,30 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   final FirestoreService _firestoreService = FirestoreService();
 
   @override
+  @override
   void initState() {
     super.initState();
     if (widget.noticia != null) {
       _tituloController.text = widget.noticia!['titulo'];
       _textoController.text = widget.noticia!['texto'];
-      _dataInicioValidade = DateTime.parse(widget.noticia!['dataInicioValidade']);
-      _dataFimValidade = widget.noticia!['dataFimValidade'] != null && widget.noticia!['dataFimValidade'].isNotEmpty
-          ? DateTime.parse(widget.noticia!['dataFimValidade'])
-          : null;
+
+      // Verificar se a data é do tipo Timestamp ou DateTime diretamente
+      if (widget.noticia!['dataInicioValidade'] is Timestamp) {
+        _dataInicioValidade = (widget.noticia!['dataInicioValidade'] as Timestamp).toDate();
+      } else if (widget.noticia!['dataInicioValidade'] is DateTime) {
+        _dataInicioValidade = widget.noticia!['dataInicioValidade'];
+      }
+
+      if (widget.noticia!['dataFimValidade'] != null) {
+        if (widget.noticia!['dataFimValidade'] is Timestamp) {
+          _dataFimValidade = (widget.noticia!['dataFimValidade'] as Timestamp).toDate();
+        } else if (widget.noticia!['dataFimValidade'] is DateTime) {
+          _dataFimValidade = widget.noticia!['dataFimValidade'];
+        }
+      }
     }
   }
+
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -85,8 +99,8 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
         "texto": _textoController.text,
         "imagemUrl": _selectedImage != null ? _selectedImage!.path : widget.noticia?['imagemUrl'],
         "dataPublicacao": widget.noticia?['dataPublicacao'] ?? DateTime.now().toIso8601String(),
-        "dataInicioValidade": _dataInicioValidade?.toIso8601String() ?? DateTime.now().toIso8601String(),
-        "dataFimValidade": _dataFimValidade?.toIso8601String() ?? "",
+        "dataInicioValidade": _dataInicioValidade != null ? Timestamp.fromDate(_dataInicioValidade!) : Timestamp.now(),
+        "dataFimValidade": _dataFimValidade != null ? Timestamp.fromDate(_dataFimValidade!) : null,
       };
 
       try {
@@ -124,6 +138,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,13 +166,13 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                   onPressed: () => _selectDateTime(context, true),
                   child: Text(_dataInicioValidade == null
                       ? 'Selecionar Data e Hora de Início'
-                      : 'Início: ${_dataInicioValidade!.toLocal().toString().split(' ')[0]} ${_dataInicioValidade!.toLocal().hour}:${_dataInicioValidade!.toLocal().minute.toString().padLeft(2, '0')}'),
+                      : 'Início: ${DateFormat('dd/MM/yyyy HH:mm').format(_dataInicioValidade!)}'),
                 ),
                 ElevatedButton(
                   onPressed: () => _selectDateTime(context, false),
                   child: Text(_dataFimValidade == null
                       ? 'Selecionar Data e Hora de Fim'
-                      : 'Fim: ${_dataFimValidade!.toLocal().toString().split(' ')[0]} ${_dataFimValidade!.toLocal().hour}:${_dataFimValidade!.toLocal().minute.toString().padLeft(2, '0')}'),
+                      : 'Fim: ${DateFormat('dd/MM/yyyy HH:mm').format(_dataFimValidade!)}'),
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(

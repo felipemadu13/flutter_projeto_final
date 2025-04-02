@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projeto_final/data/noticia_model.dart';
 import 'package:flutter_projeto_final/services/firestore_service.dart';
+import 'package:flutter_projeto_final/ui/page/news_form_screen.dart';
 import 'package:flutter_projeto_final/ui/widgets/bottom_nav.dart';
 import 'news_detail_screen.dart';
 
@@ -110,8 +111,31 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             Row(
                               children: [
-                                const Icon(Icons.edit, color: Colors.blue),
-                                const Icon(Icons.delete, color: Colors.red),
+                                IconButton(
+                                  icon: const Icon(Icons.edit, color: Colors.blue),
+                                  onPressed: () {
+                                    // Passar os dados da notícia para a tela de formulário
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => NewsFormScreen(noticia: {
+                                          'id': noticia.idnoticia,
+                                          'titulo': noticia.titulo,
+                                          'texto': noticia.texto,
+                                          'imagemUrl': imagemUrl,  // Imagem atual
+                                          'dataInicioValidade': noticia.dataInicioValidade,
+                                          'dataFimValidade': noticia.dataFimValidade,
+                                        }),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete, color: Colors.red),
+                                  onPressed: () {
+                                    // Ação de deletar
+                                  },
+                                ),
                               ],
                             ),
                           ],
