@@ -116,7 +116,25 @@ class FirestoreService {
     }
   }
 
+  /// Deletar notícia
+  Future<void> deleteNoticia(int idNoticia) async {
+    try {
+      var querySnapshot = await _db
+          .collection('noticias')
+          .where('idNoticia', isEqualTo: idNoticia)
+          .limit(1)
+          .get();
 
+      if (querySnapshot.docs.isNotEmpty) {
+        var docId = querySnapshot.docs.first.id;
+        await _db.collection('noticias').doc(docId).delete();
+      } else {
+        throw Exception("Notícia não encontrada");
+      }
+    } catch (e) {
+      print("Erro ao deletar notícia: $e");
+    }
+  }
 
 
   /// getByIdAutor

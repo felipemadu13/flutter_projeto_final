@@ -38,6 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return imagemUrl ?? 'assets/images/default_image.jpg';
   }
 
+  Future<void> deleteNoticia(int noticiaId) async {
+    await _firestoreService.deleteNoticia(noticiaId);
+    fetchNoticias(); // Atualiza a lista após a exclusão
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,7 +138,31 @@ class _HomeScreenState extends State<HomeScreen> {
                                 IconButton(
                                   icon: const Icon(Icons.delete, color: Colors.red),
                                   onPressed: () {
-                                    // Ação de deletar
+                                    // Exibe o diálogo de confirmação
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('Confirmar Exclusão'),
+                                          content: const Text('Você tem certeza que deseja excluir esta notícia?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text('Cancelar'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                deleteNoticia(noticia.idnoticia);
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text('Excluir'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
                                   },
                                 ),
                               ],
