@@ -19,7 +19,7 @@ class Autor {
   factory Autor.fromFirestore(DocumentSnapshot docSnapshot) {
     final data = docSnapshot.data() as Map<String, dynamic>;
     return Autor(
-      idAutor: data['idAutor'] ?? 0, // Pode ser removido se não for mais usado
+      idAutor: data['idAutor'] ?? 0, 
       Nome: data['Nome'] ?? '',
       cpf: data['cpf'] ?? '',
       email: data['email'] ?? '',

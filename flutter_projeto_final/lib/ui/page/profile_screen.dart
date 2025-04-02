@@ -142,8 +142,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       decoration: const InputDecoration(
                         labelText: 'Email',
                         border: OutlineInputBorder(),
+                        enabled: false, // Adicionado para desabilitar visualmente o campo
                       ),
-                      readOnly: true, // O e-mail não pode ser editado
+                      readOnly: true, // Impede a edição do campo
                     ),
                     const SizedBox(height: 15),
                     TextField(
@@ -159,7 +160,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(255, 41, 109, 94),
                       ),
-                      child: const Text('Salvar Alterações'),
+                      child: const Text(
+                        'Salvar Alterações',
+                        style: TextStyle(color: Colors.white), // Define a cor do texto como branco
+                      ),
                     ),
                   ],
                 ),
