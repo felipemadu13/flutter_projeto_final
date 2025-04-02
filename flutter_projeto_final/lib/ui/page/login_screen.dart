@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_projeto_final/ui/page/home_screen.dart';
 import 'package:flutter_projeto_final/data/autor_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'cadastro_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,7 +18,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   String? errorMessage;
 
-
   void _login() async {
     setState(() {
       isLoading = true;
@@ -29,7 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
       String cpf = cpfController.text;
       String senha = senhaController.text;
 
-      // Buscar autor no Firestore com base no cpf
       QuerySnapshot querySnapshot = await _firestore
           .collection('autores')
           .where('cpf', isEqualTo: cpf)
@@ -46,7 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
       DocumentSnapshot docSnapshot = querySnapshot.docs.first;
       Autor autor = Autor.fromFirestore(docSnapshot);
 
-      // Verifica se a senha corresponde à armazenada no Firestore
       if (senha != docSnapshot['senha']) {
         setState(() {
           errorMessage = "CPF ou senha incorretos!";
@@ -55,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      // Se as senhas corresponderem, navega para a tela inicial
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -115,18 +111,41 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 20),
               isLoading
                   ? CircularProgressIndicator()
-                  : SizedBox(
-                width: 280,
-                child: ElevatedButton(
-                  onPressed: _login,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF347D6B), // Cor do botão
+                  : Column(
+                children: [
+                  SizedBox(
+                    width: 280,
+                    child: ElevatedButton(
+                      onPressed: _login,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF347D6B),
+                      ),
+                      child: Text(
+                        "ENTRAR",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   ),
-                  child: Text(
-                    "ENTRAR",
-                    style: TextStyle(color: Colors.white),
+                  SizedBox(height: 10),
+                  SizedBox(
+                    width: 280,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CadastroScreen()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueGrey,
+                      ),
+                      child: Text(
+                        "CADASTRAR-SE",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
