@@ -63,8 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (e.code == 'invalid-credential') {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('E-mail ou senha inválidos. Verifique e tente novamente.'),
+          SnackBar(
+            content: Text('E-mail ou senha inválidos. Verifique e tente novamente. ${e.code}'),
           ),
         );
       } else {
