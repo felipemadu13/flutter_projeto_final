@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_projeto_final/data/autor_model.dart';
+import 'package:flutter_projeto_final/data/categoria_model.dart';
 import 'package:flutter_projeto_final/data/imagem_model.dart';
 import '../data/noticia_model.dart';
 import 'package:http/http.dart' as http;
@@ -60,8 +61,7 @@ class FirestoreService {
   }
 
   /// Post notícia
-  String idUnico = DateTime.now().millisecondsSinceEpoch.toString();
-  Future<void> createNoticia(Noticia noticia, File? imageFile) async {
+  Future<void> createNoticia(Noticia noticia, File? imageFile, List<int> categoriasSelecionadas) async {
     int idNoticia = await _generateIdNoticia();
     List<int> imagensIds = [];
 
@@ -87,7 +87,7 @@ class FirestoreService {
       titulo: noticia.titulo,
       texto: noticia.texto,
       imagens: imagensIds,
-      categorias: noticia.categorias,
+      categorias: categoriasSelecionadas,
       dataInclusao: DateTime.now(),
       dataInicioValidade: noticia.dataInicioValidade,
       dataFimValidade: noticia.dataFimValidade,
@@ -174,6 +174,39 @@ class FirestoreService {
     }
     return null;
   }
+
+  /// Método para buscar todas as categorias cadastradas
+  Future<List<Categoria>> fetchCategorias() async {
+    final snapshot = await _db.collection('categorias').get();
+    return snapshot.docs.map((doc) => Categoria.fromMap(doc.data())).toList();
+  }
+
+  /// Método para criar uma nova categoria
+  Future<int> createCategoria(String nomeCategoria) async {
+    DocumentReference docRef = await FirebaseFirestore.instance
+        .collection('categorias')
+        .add({'nome': nomeCategoria});
+
+    return docRef.id.hashCode;
+  }
+
+  Future<int> getCategoriaIdByNome(String nomeCategoria) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection('categorias')
+        .where('Nome', isEqualTo: nomeCategoria)
+        .limit(1)
+        .get();
+
+    if (query.docs.isNotEmpty) {
+      return query.docs.first.get('idCategoria') as int;
+    } else {
+      throw Exception('Categoria não encontrada');
+    }
+  }
+
+
+
+
 
 
 }
