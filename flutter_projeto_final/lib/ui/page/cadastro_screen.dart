@@ -1,78 +1,112 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_projeto_final/data/autor_model.dart';
-import 'package:flutter_projeto_final/ui/page/home_screen.dart';
+import 'package:flutter_projeto_final/services/auth_service.dart';
+import 'package:flutter_projeto_final/ui/page/login_screen.dart';
 
+class CadastroScreen extends StatefulWidget {
+  const CadastroScreen({super.key});
 
+  @override
+  State<CadastroScreen> createState() => _CadastroScreenState();
+}
 
-class CadastroScreen extends StatelessWidget {
+class _CadastroScreenState extends State<CadastroScreen> {
   final TextEditingController nomeController = TextEditingController();
-  final TextEditingController cpfController = TextEditingController();
+  final TextEditingController sobrenomeController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController senhaController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> addAutor(Autor autor) async {
+  Future<void> cadastrarUsuario() async {
     try {
-      int idAutor = DateTime.now().millisecondsSinceEpoch;
-      Autor novoAutor = Autor(
-        idAutor: idAutor,
-        Nome: autor.Nome,
-        cpf: autor.cpf,
-        email: autor.email,
-        avatarUrl: autor.avatarUrl,
+
+      final userCredential = await authService.value.createAccount(
+        email: emailController.text.trim(),
+        password: senhaController.text.trim(),
       );
 
-      await _firestore.collection('autores').add({
-        'idAutor': novoAutor.idAutor,
-        'Nome': novoAutor.Nome,
-        'cpf': novoAutor.cpf,
-        'email': novoAutor.email,
-        'avatarUrl': novoAutor.avatarUrl,
-        'senha': senhaController.text,
+
+      if (userCredential.user != null && !userCredential.user!.emailVerified) {
+        await userCredential.user!.sendEmailVerification();
+        debugPrint("E-mail de verificação enviado para o usuário.");
+      }
+
+      String uid = userCredential.user!.uid;
+
+      await _firestore.collection('autores').doc(uid).set({
+        'nome': nomeController.text.trim(),
+        'sobrenome': sobrenomeController.text.trim(),
+        'email': emailController.text.trim(),
+        'avatarUrl': '',
+        'uid': uid,
       });
+
+      await authService.value.updateUsername(
+        '${nomeController.text.trim()} ${sobrenomeController.text.trim()}',
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Cadastro realizado com sucesso! Verifique seu e-mail para ativar sua conta.',
+          ),
+        ),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
     } catch (e) {
-      print("Erro ao adicionar autor: $e");
-      throw Exception("Erro ao adicionar autor");
+      debugPrint("Erro ao cadastrar usuário: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erro ao cadastrar usuário: $e")),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Cadastro")),
+      appBar: AppBar(title: const Text("Cadastro")),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            TextField(controller: nomeController, decoration: InputDecoration(labelText: "Nome")),
-            TextField(controller: cpfController, decoration: InputDecoration(labelText: "CPF")),
-            TextField(controller: emailController, decoration: InputDecoration(labelText: "E-mail")),
-            TextField(controller: senhaController, decoration: InputDecoration(labelText: "Senha"), obscureText: true),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                Autor novoAutor = Autor(
-                  idAutor: DateTime.now().millisecondsSinceEpoch,
-                  Nome: nomeController.text,
-                  cpf: cpfController.text,
-                  email: emailController.text,
-                  avatarUrl: "",
-                );
-                await addAutor(novoAutor);
-
-                // Navega para HomeScreen após o cadastro
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                );
-              },
-              child: Text("Cadastrar"),
+            TextField(
+              controller: nomeController,
+              decoration: const InputDecoration(labelText: "Nome"),
             ),
-
+            TextField(
+              controller: sobrenomeController,
+              decoration: const InputDecoration(labelText: "Sobrenome"),
+            ),
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(labelText: "E-mail"),
+            ),
+            TextField(
+              controller: senhaController,
+              decoration: const InputDecoration(labelText: "Senha"),
+              obscureText: true,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: cadastrarUsuario,
+              child: const Text("Cadastrar"),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    nomeController.dispose();
+    sobrenomeController.dispose();
+    emailController.dispose();
+    senhaController.dispose();
+    super.dispose();
   }
 }

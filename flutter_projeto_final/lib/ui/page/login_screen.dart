@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_projeto_final/ui/page/home_screen.dart';
-import 'package:flutter_projeto_final/data/autor_model.dart';
 import 'cadastro_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -12,53 +11,53 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController cpfController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController senhaController = TextEditingController();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = false;
   String? errorMessage;
 
-  void _login() async {
+  Future<void> _login() async {
     setState(() {
       isLoading = true;
       errorMessage = null;
     });
 
     try {
-      String cpf = cpfController.text;
-      String senha = senhaController.text;
+      // Autentica o usuário com FirebaseAuth
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: senhaController.text.trim(),
+      );
 
-      QuerySnapshot querySnapshot = await _firestore
-          .collection('autores')
-          .where('cpf', isEqualTo: cpf)
-          .get();
+      // Verifica se o e-mail do usuário está verificado
+      if (userCredential.user != null && !userCredential.user!.emailVerified) {
+        // Desconecta o usuário
+        await _auth.signOut();
 
-      if (querySnapshot.docs.isEmpty) {
+        // Exibe uma mensagem informando que o e-mail precisa ser verificado
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Seu e-mail não está verificado. Verifique seu e-mail antes de acessar o sistema.',
+            ),
+          ),
+        );
+
         setState(() {
-          errorMessage = "CPF ou senha incorretos!";
           isLoading = false;
         });
         return;
       }
 
-      DocumentSnapshot docSnapshot = querySnapshot.docs.first;
-      Autor autor = Autor.fromFirestore(docSnapshot);
-
-      if (senha != docSnapshot['senha']) {
-        setState(() {
-          errorMessage = "CPF ou senha incorretos!";
-          isLoading = false;
-        });
-        return;
-      }
-
+      // Navega para a HomeScreen após o login bem-sucedido
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     } catch (e) {
       setState(() {
-        errorMessage = "Erro ao realizar o login!";
+        errorMessage = "Erro ao realizar o login: ${e.toString()}";
         isLoading = false;
       });
     }
@@ -77,23 +76,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 'assets/images/logotipo_tce.png',
                 height: 150,
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               SizedBox(
                 width: 280,
                 child: TextField(
-                  controller: cpfController,
-                  decoration: InputDecoration(
-                    labelText: "Digite seu CPF",
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    labelText: "Digite seu E-mail",
                     border: OutlineInputBorder(),
                   ),
                 ),
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               SizedBox(
                 width: 280,
                 child: TextField(
                   controller: senhaController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: "Digite sua senha",
                     border: OutlineInputBorder(),
                   ),
@@ -105,52 +104,62 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     errorMessage!,
-                    style: TextStyle(color: Colors.red),
+                    style: const TextStyle(color: Colors.red),
                   ),
                 ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               isLoading
-                  ? CircularProgressIndicator()
+                  ? const CircularProgressIndicator()
                   : Column(
-                children: [
-                  SizedBox(
-                    width: 280,
-                    child: ElevatedButton(
-                      onPressed: _login,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF347D6B),
-                      ),
-                      child: Text(
-                        "ENTRAR",
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      children: [
+                        SizedBox(
+                          width: 280,
+                          child: ElevatedButton(
+                            onPressed: _login,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF347D6B),
+                            ),
+                            child: const Text(
+                              "ENTRAR",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: 280,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const CadastroScreen(),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueGrey,
+                            ),
+                            child: const Text(
+                              "CADASTRAR-SE",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  SizedBox(
-                    width: 280,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => CadastroScreen()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueGrey,
-                      ),
-                      child: Text(
-                        "CADASTRAR-SE",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // Libera os controladores de texto ao sair da tela
+    emailController.dispose();
+    senhaController.dispose();
+    super.dispose();
   }
 }

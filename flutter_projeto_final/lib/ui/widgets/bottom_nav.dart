@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projeto_final/ui/page/news_form_screen.dart';
+import 'package:flutter_projeto_final/ui/page/profile_screen.dart';
 
 class BottomNav extends StatelessWidget {
   final int currentIndex;
@@ -22,6 +23,12 @@ class BottomNav extends StatelessWidget {
         } else if (index == 2) {
           // Navegar para agendamentos
           Navigator.pushNamed(context, '/schedule');
+        } else if (index == 3) {
+          // Navegar para o perfil
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileScreen()),
+          );
         } else {
           onTap(index);
         }
