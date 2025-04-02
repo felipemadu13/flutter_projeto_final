@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_projeto_final/ui/page/home_screen.dart';
+import 'package:flutter_projeto_final/services/auth_service.dart';
 import 'cadastro_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -61,6 +62,70 @@ class _LoginScreenState extends State<LoginScreen> {
         isLoading = false;
       });
     }
+  }
+
+  Future<void> _resetPassword() async {
+    final TextEditingController resetEmailController = TextEditingController();
+
+    // Exibe um diálogo para o usuário inserir o e-mail
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Esqueci a senha"),
+          content: TextField(
+            controller: resetEmailController,
+            decoration: const InputDecoration(
+              labelText: "Digite seu e-mail",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () async {
+                try {
+                  await authService.value.resetPassword(resetEmailController.text.trim());
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("E-mail de redefinição de senha enviado!"),
+                    ),
+                  );
+                } on FirebaseAuthException catch (e) {
+                  Navigator.pop(context);
+                  if (e.code == 'user-not-found') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("E-mail não encontrado."),
+                      ),
+                    );
+                  } else {
+                    // Exibe mensagem de erro genérico
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Erro ao enviar e-mail de redefinição: ${e.message}"),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Erro inesperado: $e"),
+                    ),
+                  );
+                }
+              },
+              child: const Text("Enviar"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -144,6 +209,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               "CADASTRAR-SE",
                               style: TextStyle(color: Colors.white),
                             ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        TextButton(
+                          onPressed: _resetPassword,
+                          child: const Text(
+                            "Esqueci a senha",
+                            style: TextStyle(color: Colors.blue),
                           ),
                         ),
                       ],
