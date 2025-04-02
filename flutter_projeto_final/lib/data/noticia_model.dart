@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Noticia {
   final int idnoticia;
-  final int idAutor;
+  final String idAutor;
   final String titulo;
   final String texto;
   final List<int> imagens;
@@ -27,7 +27,7 @@ class Noticia {
   factory Noticia.fromMap(Map<String, dynamic> data) {
     return Noticia(
       idnoticia: data['idNoticia'] ?? 0,
-      idAutor: data['idAutor'] ?? 0,
+      idAutor: data['idAutor'] ?? '', 
       titulo: data['titulo'] ?? '',
       texto: data['texto'] ?? '',
       imagens: List<int>.from(data['imagens'] ?? []),

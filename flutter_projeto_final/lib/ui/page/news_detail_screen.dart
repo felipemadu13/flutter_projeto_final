@@ -26,10 +26,10 @@ class NewsDetailScreen extends StatelessWidget {
           var noticia = noticiaSnapshot.data!;
 
           return FutureBuilder<Autor?>(
-            future: firestoreService.getAutorById(noticia.idAutor), // Busca o autor
+            future: firestoreService.getAutorById(noticia.idAutor), // Usa o UID do autor
             builder: (context, autorSnapshot) {
               if (autorSnapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
 
               String autorNome = autorSnapshot.data?.Nome ?? "Autor desconhecido";
@@ -40,10 +40,10 @@ class NewsDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(noticia.titulo, style: Theme.of(context).textTheme.headlineSmall),
-                    SizedBox(height: 8),
-                    Text("Por $autorNome", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                    SizedBox(height: 16),
-                    Text(noticia.texto, style: TextStyle(fontSize: 16)),
+                    const SizedBox(height: 8),
+                    Text("Por $autorNome", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                    const SizedBox(height: 16),
+                    Text(noticia.texto, style: const TextStyle(fontSize: 16)),
                   ],
                 ),
               );

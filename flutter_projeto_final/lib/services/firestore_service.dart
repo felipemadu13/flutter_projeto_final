@@ -138,21 +138,24 @@ class FirestoreService {
 
 
   /// getByIdAutor
-  Future<Autor?> getAutorById(int idAutor) async {
-    var snapshot = await _db.collection('autores')
-        .where('idAutor', isEqualTo: idAutor)
-        .limit(1)
-        .get();
+  Future<Autor?> getAutorById(String uid) async {
+    try {
+      var snapshot = await _db.collection('autores')
+          .doc(uid) // Busca diretamente pelo UID do documento
+          .get();
 
-    if (snapshot.docs.isNotEmpty) {
-      var data = snapshot.docs.first.data();
-      print("Dados do Autor: $data"); // Depuração
+      if (snapshot.exists) {
+        var data = snapshot.data();
+        print("Dados do Autor: $data"); // Depuração
+        return Autor.fromFirestore(snapshot);
+      }
 
-      return Autor.fromFirestore(snapshot.docs.first);
+      print("Nenhum autor encontrado para uid: $uid");
+      return null;
+    } catch (e) {
+      print("Erro ao buscar autor por uid: $e");
+      return null;
     }
-
-    print("Nenhum autor encontrado para idAutor: $idAutor");
-    return null;
   }
 
   /// Método para adicionar um novo autor ao Firestore

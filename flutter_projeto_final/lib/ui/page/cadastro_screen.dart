@@ -31,14 +31,14 @@ class _CadastroScreenState extends State<CadastroScreen> {
         debugPrint("E-mail de verificação enviado para o usuário.");
       }
 
-      String uid = userCredential.user!.uid;
+      String autorId = userCredential.user!.uid;
 
-      await _firestore.collection('autores').doc(uid).set({
+      await _firestore.collection('autores').doc(autorId).set({
         'nome': nomeController.text.trim(),
         'sobrenome': sobrenomeController.text.trim(),
         'email': emailController.text.trim(),
         'avatarUrl': '',
-        'uid': uid,
+        'autorId': autorId,
       });
 
       await authService.value.updateUsername(

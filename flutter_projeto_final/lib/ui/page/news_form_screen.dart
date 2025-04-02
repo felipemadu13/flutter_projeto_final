@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter_projeto_final/services/firestore_service.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class NewsFormScreen extends StatefulWidget {
   final Map<String, dynamic>? noticia;
@@ -96,28 +97,51 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      List<int> categoriasSelecionadas = _criandoCategoria
-          ? [await _firestoreService.createCategoria(_novaCategoriaController.text)]
-          : [await _firestoreService.getCategoriaIdByNome(_categoriaSelecionada!)];
+      try {
+        // Obtém o usuário atual
+        final currentUser = FirebaseAuth.instance.currentUser;
 
-      final noticia = Noticia(
-        idnoticia: DateTime.now().millisecondsSinceEpoch,
-        idAutor: 1,
-        titulo: _tituloController.text,
-        texto: _textoController.text,
-        imagens: [],
-        categorias: categoriasSelecionadas,
-        dataInclusao: DateTime.now(),
-        dataInicioValidade: _dataInicioValidade ?? DateTime.now(),
-        dataFimValidade: _dataFimValidade,
-      );
+        if (currentUser == null) {
+          throw Exception('Usuário não autenticado.');
+        }
 
-      await _firestoreService.createNoticia(noticia, _selectedImage, categoriasSelecionadas);
+        // Obtém o UID do usuário atual
+        final String uid = currentUser.uid;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Notícia criada com sucesso!')),
-      );
-      Navigator.pop(context, true);
+        // Obtém as categorias selecionadas
+        List<int> categoriasSelecionadas = _criandoCategoria
+            ? [await _firestoreService.createCategoria(_novaCategoriaController.text)]
+            : [await _firestoreService.getCategoriaIdByNome(_categoriaSelecionada!)];
+
+        // Cria o objeto Noticia
+        final noticia = Noticia(
+          idnoticia: DateTime.now().millisecondsSinceEpoch,
+          idAutor: uid, // Usa o UID do usuário atual
+          titulo: _tituloController.text,
+          texto: _textoController.text,
+          imagens: [],
+          categorias: categoriasSelecionadas,
+          dataInclusao: DateTime.now(),
+          dataInicioValidade: _dataInicioValidade ?? DateTime.now(),
+          dataFimValidade: _dataFimValidade,
+        );
+
+        // Salva a notícia no Firestore
+        await _firestoreService.createNoticia(noticia, _selectedImage, categoriasSelecionadas);
+
+        // Exibe uma mensagem de sucesso
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Notícia criada com sucesso!')),
+        );
+
+        // Retorna para a tela anterior
+        Navigator.pop(context, true);
+      } catch (e) {
+        // Exibe uma mensagem de erro
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao criar notícia: $e')),
+        );
+      }
     }
   }
 
