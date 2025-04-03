@@ -105,6 +105,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               );
                             },
+                            onLongPress: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NewsFormScreen(
+                                    noticia: {
+                                      'idnoticia': noticia.idnoticia,
+                                      'titulo': noticia.titulo,
+                                      'texto': noticia.texto,
+                                      'imagemUrl': imagemUrl,
+                                      'dataInicioValidade': noticia.dataInicioValidade,
+                                      'dataFimValidade': noticia.dataFimValidade,
+                                      'categorias': noticia.categorias,
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
                             child: AspectRatio(
                               aspectRatio: 16 / 9, // Substitua pela proporção da sua imagem default_image.jpg
                               child: ClipRRect(
@@ -141,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     CircleAvatar(
                                       radius: 12, 
                                       backgroundImage: autorAvatar.isNotEmpty
-                                          ? FileImage(File(autorAvatar)) // Exibe o avatar do autor
+                                          ? FileImage(File(autorAvatar))
                                           : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
                                       backgroundColor: Colors.grey[200],
                                     ),
@@ -159,62 +177,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.all(10),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.edit, color: Colors.blue),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => NewsFormScreen(
-                                              noticia: {
-                                                'idnoticia': noticia.idnoticia,
-                                                'titulo': noticia.titulo,
-                                                'texto': noticia.texto,
-                                                'imagemUrl': imagemUrl,
-                                                'dataInicioValidade': noticia.dataInicioValidade,
-                                                'dataFimValidade': noticia.dataFimValidade,
-                                                'categorias': noticia.categorias,
-                                              },
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete, color: Colors.red),
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: const Text('Confirmar Exclusão'),
-                                              content: const Text('Você tem certeza que deseja excluir esta notícia?'),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: const Text('Cancelar'),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () {
-                                                    deleteNoticia(noticia.idnoticia);
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: const Text('Excluir'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
                             ),
                           ),
                         ],
