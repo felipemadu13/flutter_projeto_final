@@ -236,6 +236,48 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                   onPressed: _submitForm,
                   child: const Text('Salvar Notícia'),
                 ),
+                if (_isEditing)
+                  ElevatedButton(
+                    onPressed: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Confirmar Exclusão'),
+                            content: const Text('Você tem certeza que deseja excluir esta notícia?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: const Text('Cancelar'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(true),
+                                child: const Text('Excluir'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (confirm == true) {
+                        try {
+                          await _firestoreService.deleteNoticia(_noticiaId!);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Notícia excluída com sucesso!')),
+                          );
+                          Navigator.pop(context, true); // Retorna para a tela anterior
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Erro ao excluir notícia: $e')),
+                          );
+                        }
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red, // Cor do botão
+                    ),
+                    child: const Text('Deletar Notícia'),
+                  ),
               ],
             ),
           ),

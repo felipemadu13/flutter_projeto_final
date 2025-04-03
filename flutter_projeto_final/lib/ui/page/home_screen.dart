@@ -46,6 +46,21 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchNoticias(); // Atualiza a lista após a exclusão
   }
 
+  String _formatTimeDifference(DateTime dataInicioValidade) {
+    final now = DateTime.now();
+    final difference = now.difference(dataInicioValidade);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays}d atrás';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours}h atrás';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes}min atrás';
+    } else {
+      return 'Agora';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,6 +182,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Text(
                                       autorNome,
                                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    const Text(
+                                      '•',
+                                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      _formatTimeDifference(noticia.dataInicioValidade),
+                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
                                     ),
                                   ],
                                 ),
