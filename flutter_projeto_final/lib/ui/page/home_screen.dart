@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_projeto_final/data/noticia_model.dart';
 import 'package:flutter_projeto_final/services/firestore_service.dart';
@@ -128,9 +130,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Row(
                                   children: [
                                     CircleAvatar(
-                                      radius: 15, // Tamanho do avatar
+                                      radius: 30, // Tamanho do avatar
                                       backgroundImage: autorAvatar.isNotEmpty
-                                          ? NetworkImage(autorAvatar) // Exibe o avatar do autor
+                                          ? FileImage(File(autorAvatar)) // Exibe o avatar do autor
                                           : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
                                       backgroundColor: Colors.grey[200],
                                     ),
