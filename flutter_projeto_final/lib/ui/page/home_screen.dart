@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 final imagemUrl = snapshot.data ?? 'assets/images/default_image.jpg';
 
                 return FutureBuilder<Autor?>(
-                  future: _firestoreService.getAutorById(noticia.autorId), // Busca o autor pelo AutorId
+                  future: _firestoreService.getAutorById(noticia.autorId), 
                   builder: (context, autorSnapshot) {
                     if (autorSnapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
@@ -105,12 +105,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               );
                             },
-                            child: Image.network(
-                              imagemUrl,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset('assets/images/default_image.jpg', fit: BoxFit.cover);
-                              },
-                              fit: BoxFit.cover,
+                            child: AspectRatio(
+                              aspectRatio: 16 / 9, // Substitua pela proporção da sua imagem default_image.jpg
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5), // Define o border radius de 8px
+                                child: Image.network(
+                                  imagemUrl,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/images/default_image.jpg',
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                  fit: BoxFit.cover, // Garante que a imagem preencha o espaço
+                                ),
+                              ),
                             ),
                           ),
                           Padding(
@@ -130,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Row(
                                   children: [
                                     CircleAvatar(
-                                      radius: 30, // Tamanho do avatar
+                                      radius: 12, 
                                       backgroundImage: autorAvatar.isNotEmpty
                                           ? FileImage(File(autorAvatar)) // Exibe o avatar do autor
                                           : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
@@ -139,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     const SizedBox(width: 8),
                                     Text(
                                       autorNome,
-                                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                                     ),
                                   ],
                                 ),
