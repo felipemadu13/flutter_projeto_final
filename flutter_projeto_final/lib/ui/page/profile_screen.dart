@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'edit_profile_screen.dart'; // Import da nova tela de edição
+import 'login_screen.dart'; // Import da tela de login
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -68,6 +69,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> _logout() async {
+    try {
+      await _auth.signOut(); // Faz o logout do Firebase
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()), // Redireciona para a tela de login
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao fazer logout: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,6 +127,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: const Text(
                       'Editar Informações',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _logout, // Chama o método de logout
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                    child: const Text(
+                      'Sair',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
