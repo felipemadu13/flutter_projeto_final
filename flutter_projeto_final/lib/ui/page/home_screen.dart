@@ -46,6 +46,21 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchNoticias(); // Atualiza a lista após a exclusão
   }
 
+  String _formatTimeDifference(DateTime dataInicioValidade) {
+    final now = DateTime.now();
+    final difference = now.difference(dataInicioValidade);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays}d atrás';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours}h atrás';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes}min atrás';
+    } else {
+      return 'Agora';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 final imagemUrl = snapshot.data ?? 'assets/images/default_image.jpg';
 
                 return FutureBuilder<Autor?>(
-                  future: _firestoreService.getAutorById(noticia.autorId), // Busca o autor pelo AutorId
+                  future: _firestoreService.getAutorById(noticia.autorId), 
                   builder: (context, autorSnapshot) {
                     if (autorSnapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
@@ -105,12 +120,39 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               );
                             },
-                            child: Image.network(
-                              imagemUrl,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset('assets/images/default_image.jpg', fit: BoxFit.cover);
-                              },
-                              fit: BoxFit.cover,
+                            onLongPress: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NewsFormScreen(
+                                    noticia: {
+                                      'idnoticia': noticia.idnoticia,
+                                      'titulo': noticia.titulo,
+                                      'texto': noticia.texto,
+                                      'imagemUrl': imagemUrl,
+                                      'dataInicioValidade': noticia.dataInicioValidade,
+                                      'dataFimValidade': noticia.dataFimValidade,
+                                      'categorias': noticia.categorias,
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                            child: AspectRatio(
+                              aspectRatio: 16 / 9, // Substitua pela proporção da sua imagem default_image.jpg
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5), // Define o border radius de 8px
+                                child: Image.network(
+                                  imagemUrl,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/images/default_image.jpg',
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                  fit: BoxFit.cover, // Garante que a imagem preencha o espaço
+                                ),
+                              ),
                             ),
                           ),
                           Padding(
@@ -130,16 +172,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Row(
                                   children: [
                                     CircleAvatar(
-                                      radius: 30, // Tamanho do avatar
+                                      radius: 12, 
                                       backgroundImage: autorAvatar.isNotEmpty
-                                          ? FileImage(File(autorAvatar)) // Exibe o avatar do autor
+                                          ? FileImage(File(autorAvatar))
                                           : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
                                       backgroundColor: Colors.grey[200],
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
                                       autorNome,
-                                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    const Text(
+                                      '•',
+                                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      _formatTimeDifference(noticia.dataInicioValidade),
+                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
                                     ),
                                   ],
                                 ),
@@ -150,59 +202,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.all(10),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.edit, color: Colors.blue),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => NewsFormScreen(noticia: {
-                                              'id': noticia.idnoticia,
-                                              'titulo': noticia.titulo,
-                                              'texto': noticia.texto,
-                                              'imagemUrl': imagemUrl,
-                                              'dataInicioValidade': noticia.dataInicioValidade,
-                                              'dataFimValidade': noticia.dataFimValidade,
-                                            }),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete, color: Colors.red),
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: const Text('Confirmar Exclusão'),
-                                              content: const Text('Você tem certeza que deseja excluir esta notícia?'),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: const Text('Cancelar'),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () {
-                                                    deleteNoticia(noticia.idnoticia);
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: const Text('Excluir'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
                             ),
                           ),
                         ],
