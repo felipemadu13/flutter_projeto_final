@@ -29,19 +29,35 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   bool _criandoCategoria = false;
   List<String> _categorias = [];
   String? _categoriaSelecionada;
+  bool _isEditing = false; // Indica se estamos editando uma notícia existente
+  int? _noticiaId; // ID da notícia sendo editada
 
   @override
   void initState() {
     super.initState();
     _carregarCategorias();
+
+    // Verifica se estamos editando uma notícia existente
     if (widget.noticia != null) {
+      _isEditing = true;
+      _noticiaId = widget.noticia!['idnoticia'];
       _tituloController.text = widget.noticia!['titulo'];
       _textoController.text = widget.noticia!['texto'];
       if (widget.noticia!['dataInicioValidade'] is Timestamp) {
         _dataInicioValidade = (widget.noticia!['dataInicioValidade'] as Timestamp).toDate();
+      } else if (widget.noticia!['dataInicioValidade'] is DateTime) {
+        _dataInicioValidade = widget.noticia!['dataInicioValidade'];
       }
       if (widget.noticia!['dataFimValidade'] is Timestamp) {
         _dataFimValidade = (widget.noticia!['dataFimValidade'] as Timestamp).toDate();
+      } else if (widget.noticia!['dataFimValidade'] is DateTime) {
+        _dataFimValidade = widget.noticia!['dataFimValidade'];
+      }
+
+      // Valida a categoria selecionada
+      final categoriasDaNoticia = widget.noticia!['categorias'] as List<dynamic>? ?? [];
+      if (categoriasDaNoticia.isNotEmpty) {
+        _categoriaSelecionada = categoriasDaNoticia[0].toString();
       }
     }
   }
@@ -50,6 +66,11 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
     List<Categoria> categorias = await _firestoreService.fetchCategorias();
     setState(() {
       _categorias = categorias.map((categoria) => categoria.Nome).toList();
+
+      // Valida se a categoria selecionada ainda é válida
+      if (_categoriaSelecionada != null && !_categorias.contains(_categoriaSelecionada)) {
+        _categoriaSelecionada = null;
+      }
     });
   }
 
@@ -113,33 +134,46 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
             ? [await _firestoreService.createCategoria(_novaCategoriaController.text)]
             : [await _firestoreService.getCategoriaIdByNome(_categoriaSelecionada!)];
 
-        // Cria o objeto Noticia
-        final noticia = Noticia(
-          idnoticia: DateTime.now().millisecondsSinceEpoch,
-          autorId: uid, // Usa o UID do usuário atual
-          titulo: _tituloController.text,
-          texto: _textoController.text,
-          imagens: [],
-          categorias: categoriasSelecionadas,
-          dataInclusao: DateTime.now(),
-          dataInicioValidade: _dataInicioValidade ?? DateTime.now(),
-          dataFimValidade: _dataFimValidade,
-        );
+        if (_isEditing) {
+          // Atualiza a notícia existente
+          await _firestoreService.editNoticia(_noticiaId!, {
+            'titulo': _tituloController.text,
+            'texto': _tituloController.text,
+            'dataInicioValidade': _dataInicioValidade,
+            'dataFimValidade': _dataFimValidade,
+            'categorias': categoriasSelecionadas,
+          });
 
-        // Salva a notícia no Firestore
-        await _firestoreService.createNoticia(noticia, _selectedImage, categoriasSelecionadas);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Notícia atualizada com sucesso!')),
+          );
+        } else {
+          // Cria uma nova notícia
+          final noticia = Noticia(
+            idnoticia: DateTime.now().millisecondsSinceEpoch,
+            autorId: uid,
+            titulo: _tituloController.text,
+            texto: _textoController.text,
+            imagens: [],
+            categorias: categoriasSelecionadas,
+            dataInclusao: DateTime.now(),
+            dataInicioValidade: _dataInicioValidade ?? DateTime.now(),
+            dataFimValidade: _dataFimValidade,
+          );
 
-        // Exibe uma mensagem de sucesso
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Notícia criada com sucesso!')),
-        );
+          await _firestoreService.createNoticia(noticia, _selectedImage, categoriasSelecionadas);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Notícia criada com sucesso!')),
+          );
+        }
 
         // Retorna para a tela anterior
         Navigator.pop(context, true);
       } catch (e) {
         // Exibe uma mensagem de erro
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao criar notícia: $e')),
+          SnackBar(content: Text('Erro ao salvar notícia: $e')),
         );
       }
     }
@@ -148,7 +182,9 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Cadastrar Notícia')),
+      appBar: AppBar(
+        title: Text(_isEditing ? 'Editar Notícia' : 'Cadastrar Notícia'),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -168,7 +204,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                   validator: (value) => value == null || value.isEmpty ? 'Por favor, insira o texto' : null,
                 ),
                 DropdownButtonFormField<String>(
-                  value: _categoriaSelecionada,
+                  value: _categorias.contains(_categoriaSelecionada) ? _categoriaSelecionada : null,
                   decoration: const InputDecoration(labelText: 'Categoria'),
                   items: _categorias.map((categoria) {
                     return DropdownMenuItem(value: categoria, child: Text(categoria));
@@ -178,6 +214,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                       _categoriaSelecionada = value;
                     });
                   },
+                  validator: (value) => value == null ? 'Por favor, selecione uma categoria' : null,
                 ),
                 ElevatedButton(
                   onPressed: () => _selectDateTime(context, true),

@@ -159,14 +159,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => NewsFormScreen(noticia: {
-                                              'id': noticia.idnoticia,
-                                              'titulo': noticia.titulo,
-                                              'texto': noticia.texto,
-                                              'imagemUrl': imagemUrl,
-                                              'dataInicioValidade': noticia.dataInicioValidade,
-                                              'dataFimValidade': noticia.dataFimValidade,
-                                            }),
+                                            builder: (context) => NewsFormScreen(
+                                              noticia: {
+                                                'idnoticia': noticia.idnoticia,
+                                                'titulo': noticia.titulo,
+                                                'texto': noticia.texto,
+                                                'imagemUrl': imagemUrl,
+                                                'dataInicioValidade': noticia.dataInicioValidade,
+                                                'dataFimValidade': noticia.dataFimValidade,
+                                                'categorias': noticia.categorias,
+                                              },
+                                            ),
                                           ),
                                         );
                                       },
