@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_projeto_final/ui/page/home_screen.dart';
+import 'package:flutter_projeto_final/ui/page/login_screen.dart'; // Import da tela de login
+import 'package:flutter_projeto_final/services/auth_service.dart'; // Import do auth_service
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -116,6 +118,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> signOut() async {
+    try {
+      await authService.value.signOut(); // Chama o método signOut do auth_service
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()), // Redireciona para a tela de login
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao sair: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -203,6 +219,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: const Text(
                         'Salvar Alterações',
                         style: TextStyle(color: Colors.white), // Define a cor do texto como branco
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: signOut, // Botão para sair
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      child: const Text(
+                        'Sair',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
