@@ -26,13 +26,13 @@ class NewsDetailScreen extends StatelessWidget {
           var noticia = noticiaSnapshot.data!;
 
           return FutureBuilder<Autor?>(
-            future: firestoreService.getAutorById(noticia.idAutor), // Usa o UID do autor
+            future: firestoreService.getAutorById(noticia.autorId), // Usa o UID do autor
             builder: (context, autorSnapshot) {
               if (autorSnapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              String autorNome = autorSnapshot.data?.Nome ?? "Autor desconhecido";
+              String autorNome = autorSnapshot.data?.nome ?? "Autor desconhecido";
 
               return Padding(
                 padding: const EdgeInsets.all(16.0),

@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_projeto_final/data/noticia_model.dart';
 import 'package:flutter_projeto_final/services/firestore_service.dart';
 import 'package:flutter_projeto_final/ui/page/news_form_screen.dart';
 import 'package:flutter_projeto_final/ui/widgets/bottom_nav.dart';
 import 'news_detail_screen.dart';
+import 'package:flutter_projeto_final/data/autor_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -77,101 +80,135 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, snapshot) {
                 final imagemUrl = snapshot.data ?? 'assets/images/default_image.jpg';
 
-                return Card(
-                  margin: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NewsDetailScreen(noticiaId: noticia.idnoticia),
-                            ),
-                          );
-                        },
-                        child: Image.network(
-                          imagemUrl,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Image.asset('assets/images/default_image.jpg', fit: BoxFit.cover);
-                          },
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                noticia.titulo,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromARGB(255, 41, 109, 94),
+                return FutureBuilder<Autor?>(
+                  future: _firestoreService.getAutorById(noticia.autorId), // Busca o autor pelo AutorId
+                  builder: (context, autorSnapshot) {
+                    if (autorSnapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    final autor = autorSnapshot.data;
+                    final autorNome = autor?.nome ?? "Autor desconhecido";
+                    final autorAvatar = autor?.avatarUrl ?? 'assets/images/default_image.png';
+
+                    return Card(
+                      margin: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NewsDetailScreen(noticiaId: noticia.idnoticia),
                                 ),
-                              ),
+                              );
+                            },
+                            child: Image.network(
+                              imagemUrl,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset('assets/images/default_image.jpg', fit: BoxFit.cover);
+                              },
+                              fit: BoxFit.cover,
                             ),
-                            Row(
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                IconButton(
-                                  icon: const Icon(Icons.edit, color: Colors.blue),
-                                  onPressed: () {
-                                    // Passar os dados da notícia para a tela de formulário
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => NewsFormScreen(noticia: {
-                                          'id': noticia.idnoticia,
-                                          'titulo': noticia.titulo,
-                                          'texto': noticia.texto,
-                                          'imagemUrl': imagemUrl,  // Imagem atual
-                                          'dataInicioValidade': noticia.dataInicioValidade,
-                                          'dataFimValidade': noticia.dataFimValidade,
-                                        }),
-                                      ),
-                                    );
-                                  },
+                                Text(
+                                  noticia.titulo,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 41, 109, 94),
+                                  ),
                                 ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete, color: Colors.red),
-                                  onPressed: () {
-                                    // Exibe o diálogo de confirmação
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text('Confirmar Exclusão'),
-                                          content: const Text('Você tem certeza que deseja excluir esta notícia?'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: const Text('Cancelar'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                deleteNoticia(noticia.idnoticia);
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: const Text('Excluir'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 30, // Tamanho do avatar
+                                      backgroundImage: autorAvatar.isNotEmpty
+                                          ? FileImage(File(autorAvatar)) // Exibe o avatar do autor
+                                          : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
+                                      backgroundColor: Colors.grey[200],
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      autorNome,
+                                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.edit, color: Colors.blue),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => NewsFormScreen(noticia: {
+                                              'id': noticia.idnoticia,
+                                              'titulo': noticia.titulo,
+                                              'texto': noticia.texto,
+                                              'imagemUrl': imagemUrl,
+                                              'dataInicioValidade': noticia.dataInicioValidade,
+                                              'dataFimValidade': noticia.dataFimValidade,
+                                            }),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete, color: Colors.red),
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text('Confirmar Exclusão'),
+                                              content: const Text('Você tem certeza que deseja excluir esta notícia?'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text('Cancelar'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    deleteNoticia(noticia.idnoticia);
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text('Excluir'),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 );
               },
             );

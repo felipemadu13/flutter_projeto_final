@@ -83,7 +83,7 @@ class FirestoreService {
 
     Noticia novaNoticia = Noticia(
       idnoticia: idNoticia,
-      idAutor: noticia.idAutor,
+      autorId: noticia.autorId,
       titulo: noticia.titulo,
       texto: noticia.texto,
       imagens: imagensIds,
@@ -137,7 +137,7 @@ class FirestoreService {
   }
 
 
-  /// getByIdAutor
+  /// getByAutorId
   Future<Autor?> getAutorById(String uid) async {
     try {
       var snapshot = await _db.collection('autores')
@@ -155,35 +155,6 @@ class FirestoreService {
     } catch (e) {
       print("Erro ao buscar autor por uid: $e");
       return null;
-    }
-  }
-
-  /// Método para adicionar um novo autor ao Firestore
-  Future<void> addAutor(Autor autor) async {
-    try {
-      // Gerar um ID único para o autor
-      int idAutor = DateTime.now().millisecondsSinceEpoch;
-
-      // Criar um novo objeto Autor com o ID gerado
-      Autor novoAutor = Autor(
-        idAutor: idAutor,
-        Nome: autor.Nome,
-        cpf: autor.cpf,
-        email: autor.email,
-        avatarUrl: autor.avatarUrl,
-      );
-
-      // Adicionar o autor ao Firestore
-      await _db.collection('autores').add({
-        'idAutor': novoAutor.idAutor,
-        'Nome': novoAutor.Nome,
-        'cpf': novoAutor.cpf,
-        'email': novoAutor.email,
-        'avatarUrl': novoAutor.avatarUrl,
-      });
-    } catch (e) {
-      print("Erro ao adicionar autor: $e");
-      throw Exception("Erro ao adicionar autor");
     }
   }
 

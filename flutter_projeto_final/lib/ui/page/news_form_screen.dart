@@ -116,7 +116,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
         // Cria o objeto Noticia
         final noticia = Noticia(
           idnoticia: DateTime.now().millisecondsSinceEpoch,
-          idAutor: uid, // Usa o UID do usuário atual
+          autorId: uid, // Usa o UID do usuário atual
           titulo: _tituloController.text,
           texto: _textoController.text,
           imagens: [],

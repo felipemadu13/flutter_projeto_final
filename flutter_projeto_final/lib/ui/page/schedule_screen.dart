@@ -56,7 +56,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       MaterialPageRoute(
         builder: (context) => NewsFormScreen(noticia: {
           'idNoticia': noticia.idnoticia,
-          'idAutor': noticia.idAutor,
+          'autorId': noticia.autorId,
           'titulo': noticia.titulo,
           'texto': noticia.texto,
           'imagens': noticia.imagens,
