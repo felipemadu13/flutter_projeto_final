@@ -38,6 +38,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   List<String> _categoriaSelecionada = [];
   bool _isEditing = false; // Indica se estamos editando uma notícia existente
   int? _noticiaId; // ID da notícia sendo editada
+  String? _imageUrl;
   List<String> _todasCategoriasNomes = [];
   @override
   void initState() {

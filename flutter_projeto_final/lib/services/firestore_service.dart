@@ -104,7 +104,7 @@ class FirestoreService {
           .where('idNoticia', isEqualTo: idNoticia)
           .limit(1)
           .get();
-      
+
 
       if (querySnapshot.docs.isNotEmpty) {
         var docId = querySnapshot.docs.first.id;
