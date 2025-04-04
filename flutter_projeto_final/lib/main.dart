@@ -1,21 +1,31 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_projeto_final/ui/page/login_screen.dart';
 import 'package:flutter_projeto_final/ui/page/home_screen.dart';
+import 'package:flutter_projeto_final/ui/page/news_form_screen.dart';
+import 'package:flutter_projeto_final/ui/page/schedule_screen.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const HomeScreen(),
+      title: 'Flutter Firebase',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginScreen(),
+        '/home': (context) => HomeScreen(),
+        '/schedule': (context) => ScheduleScreen(),
+        '/news_form': (context) => NewsFormScreen(),
+      },
     );
   }
 }
-
