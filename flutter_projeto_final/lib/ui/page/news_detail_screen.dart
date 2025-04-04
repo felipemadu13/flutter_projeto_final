@@ -12,7 +12,7 @@ class NewsDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Detalhes da Notícia")),
+      appBar: AppBar(title: Text("Detalhes da Notícia"), automaticallyImplyLeading: false,),
       body: FutureBuilder<Noticia?>(
         future: firestoreService.getNoticiaById(noticiaId),
         builder: (context, noticiaSnapshot) {

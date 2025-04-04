@@ -65,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: TextField(
           onChanged: (query) {
             setState(() {
@@ -214,7 +215,22 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
       ),
-      bottomNavigationBar: BottomNav(currentIndex: _selectedIndex, onTap: (index) {}),
+      bottomNavigationBar: BottomNav(
+        currentIndex: 0, // Índice da aba atual (0 para Home)
+        onTap: (index) {
+          _navigateToScreen(context, index);
+        },
+      ),
     );
+  }
+
+  void _navigateToScreen(BuildContext context, int index) {
+    if (index == 1) {
+      Navigator.pushNamed(context, '/news_form');
+    } else if (index == 2) {
+      Navigator.pushNamed(context, '/schedule');
+    } else if (index == 3) {
+      Navigator.pushNamed(context, '/profile');
+    }
   }
 }

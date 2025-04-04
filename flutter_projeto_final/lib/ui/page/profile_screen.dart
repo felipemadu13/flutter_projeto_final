@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_projeto_final/ui/widgets/bottom_nav.dart';
 import 'edit_profile_screen.dart'; // Import da nova tela de edição
 import 'login_screen.dart'; // Import da tela de login
 
@@ -87,8 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Perfil do Usuário'),
-        backgroundColor: const Color.fromARGB(255, 41, 109, 94),
+        automaticallyImplyLeading: false,
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -144,6 +144,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
+      bottomNavigationBar: BottomNav(
+        currentIndex: 3, // Índice da aba atual (3 para Perfil)
+        onTap: (index) {
+          _navigateToScreen(context, index);
+        },
+      ),
     );
+  }
+
+  void _navigateToScreen(BuildContext context, int index) {
+    if (index == 0) {
+      Navigator.pushNamed(context, '/home');
+    } else if (index == 1) {
+      Navigator.pushNamed(context, '/news_form');
+    } else if (index == 2) {
+      Navigator.pushNamed(context, '/schedule');
+    }
   }
 }

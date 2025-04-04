@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_projeto_final/data/noticia_model.dart';
 import 'package:flutter_projeto_final/data/categoria_model.dart';
+import 'package:flutter_projeto_final/ui/widgets/bottom_nav.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter_projeto_final/services/firestore_service.dart';
@@ -183,7 +184,9 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? 'Editar Notícia' : 'Cadastrar Notícia'),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        title: Text(_isEditing ? 'Editar Notícia' : 'Cadastrar Notícia', style: TextStyle(color: Colors.grey),),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -283,6 +286,22 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: BottomNav(
+        currentIndex: 1, // Índice da aba atual (1 para Criar)
+        onTap: (index) {
+          _navigateToScreen(context, index);
+        },
+      ),
     );
+  }
+
+  void _navigateToScreen(BuildContext context, int index) {
+    if (index == 0) {
+      Navigator.pushNamed(context, '/home');
+    } else if (index == 2) {
+      Navigator.pushNamed(context, '/schedule');
+    } else if (index == 3) {
+      Navigator.pushNamed(context, '/profile');
+    }
   }
 }
