@@ -7,6 +7,10 @@ import 'package:flutter_projeto_final/data/categoria_model.dart';
 import 'package:flutter_projeto_final/data/imagem_model.dart';
 import '../data/noticia_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -206,6 +210,29 @@ class FirestoreService {
       return query.docs.first.get('idCategoria') as int;
     } else {
       throw Exception('Categoria não encontrada');
+    }
+  }
+
+
+  ///STORAGE
+  Future<String?> uploadImage(File imageFile) async {
+    try {
+      final currentUser = _auth.currentUser;
+      if (currentUser == null) return null;
+
+      String fileName = basename(imageFile.path);
+      Reference storageRef = FirebaseStorage.instance
+          .ref()
+          .child('users/${currentUser.uid}/avatar/$fileName');
+
+      UploadTask uploadTask = storageRef.putFile(imageFile);
+      TaskSnapshot snapshot = await uploadTask;
+      String downloadUrl = await snapshot.ref.getDownloadURL();
+
+      return downloadUrl;
+    } catch (e) {
+      print('Erro no upload: $e');
+      return null;
     }
   }
 
