@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_projeto_final/data/imagem_model.dart';
 import 'package:flutter_projeto_final/data/noticia_model.dart';
 import 'package:flutter_projeto_final/data/categoria_model.dart';
 import 'package:flutter_projeto_final/ui/widgets/bottom_nav.dart';
@@ -184,7 +185,16 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
         return;
       }
 
+      String? novaImagemUrl;
+      if (_selectedImage != null) {
+        novaImagemUrl = await _firestoreService.uploadImageToImgBB(_selectedImage!);
+        if (novaImagemUrl == null) {
+          throw Exception("Falha ao fazer upload da imagem");
+        }
+      }
+
       try {
+        List<int> imagensAtualizadas = [];
         List<Map<String, dynamic>> _categorias = [];
         // Obtém o usuário atual
         final currentUser = FirebaseAuth.instance.currentUser;
@@ -193,6 +203,31 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
         }
 
         final String uid = currentUser.uid;
+
+        if (_isEditing && widget.noticia != null) {
+          imagensAtualizadas = List<int>.from(widget.noticia!['imagens'] ?? []);
+        }
+
+        if (_selectedImage != null) {
+          // Faz upload para o ImgBB e obtém a URL
+          String? urlImagem = await _firestoreService.uploadImageToImgBB(
+              _selectedImage!);
+          if (urlImagem == null) throw Exception("Falha no upload da imagem");
+
+          // Cria um novo ImagemModel no Firestore e obtém o ID
+          int novoIdImagem = DateTime
+              .now()
+              .millisecondsSinceEpoch; // ou um ID único
+          await _firestoreService.salvarImagem(
+            ImagemModel(
+              idImagem: novoIdImagem,
+              arquivoImagem: urlImagem,
+              dataInclusao: DateTime.now(),
+            ),
+          );
+          imagensAtualizadas.add(novoIdImagem);
+        }
+
 
         // Obtém IDs de todas as categorias selecionadas
         List<int> categoriasSelecionadas = [];
@@ -234,10 +269,12 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
           Map<String, dynamic> updateData = {
             'titulo': _tituloController.text,
             'texto': _textoController.text,
+            'imagens': imagensAtualizadas,
             'dataInicioValidade': _dataInicioValidade,
             'dataFimValidade': _dataFimValidade,
             'categorias': categoriasSelecionadas,
           };
+
 
           // Verifica e mantém a data de inclusão original se existir
           if (widget.noticia != null && widget.noticia!.containsKey('dataInclusao')) {

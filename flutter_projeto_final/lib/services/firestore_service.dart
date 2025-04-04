@@ -250,6 +250,13 @@ class FirestoreService {
     }
   }
 
+  Future<void> salvarImagem(ImagemModel imagem) async {
+    await _db
+        .collection('imagens')
+        .doc(imagem.idImagem.toString())
+        .set(imagem.toMap());
+  }
+
   ///STORAGE
   Future<String?> uploadImage(File imageFile) async {
     try {
@@ -288,4 +295,6 @@ class FirestoreService {
       return null;
     }
   }
+
+
 }
