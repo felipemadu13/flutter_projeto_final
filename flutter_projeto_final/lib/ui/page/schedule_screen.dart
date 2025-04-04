@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projeto_final/ui/page/news_form_screen.dart';
+import 'package:flutter_projeto_final/ui/widgets/bottom_nav.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_projeto_final/services/firestore_service.dart';
 import 'package:flutter_projeto_final/data/noticia_model.dart';
@@ -78,8 +79,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Agendamentos'),
-        backgroundColor: const Color.fromARGB(255, 41, 109, 94),
+        // backgroundColor: const Color.fromARGB(255, 41, 109, 94),
       ),
       body: RefreshIndicator(
         onRefresh: fetchScheduledNoticias,
@@ -154,6 +156,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           },
         ),
       ),
+      bottomNavigationBar: BottomNav(
+        currentIndex: 2, // Índice da aba atual (2 para Agendamentos)
+        onTap: (index) {
+          _navigateToScreen(context, index);
+        },
+      ),
     );
+  }
+
+  void _navigateToScreen(BuildContext context, int index) {
+    if (index == 0) {
+      Navigator.pushNamed(context, '/home');
+    } else if (index == 1) {
+      Navigator.pushNamed(context, '/news_form');
+    } else if (index == 3) {
+      Navigator.pushNamed(context, '/profile');
+    }
   }
 }

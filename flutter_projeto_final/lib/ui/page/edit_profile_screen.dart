@@ -114,7 +114,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Editar Informações'),
-        backgroundColor: const Color.fromARGB(255, 41, 109, 94),
+        automaticallyImplyLeading: false,
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
