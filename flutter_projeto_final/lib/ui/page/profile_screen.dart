@@ -89,7 +89,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Perfil do Usuário'),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())

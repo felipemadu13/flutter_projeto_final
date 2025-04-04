@@ -80,8 +80,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Agendamentos'),
-        // backgroundColor: const Color.fromARGB(255, 41, 109, 94),
       ),
       body: RefreshIndicator(
         onRefresh: fetchScheduledNoticias,

@@ -184,8 +184,9 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         automaticallyImplyLeading: false,
-        title: Text(_isEditing ? 'Editar Notícia' : 'Cadastrar Notícia'),
+        title: Text(_isEditing ? 'Editar Notícia' : 'Cadastrar Notícia', style: TextStyle(color: Colors.grey),),
       ),
       body: SingleChildScrollView(
         child: Padding(
