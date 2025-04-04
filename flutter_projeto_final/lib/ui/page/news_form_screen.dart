@@ -27,7 +27,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   DateTime? _dataFimValidade;
   final FirestoreService _firestoreService = FirestoreService();
   bool _criandoCategoria = false;
-  List<String> _categorias = [];
+  List<Map<String, dynamic>> _categorias = [];
   String? _categoriaSelecionada;
   bool _isEditing = false; // Indica se estamos editando uma notícia existente
   int? _noticiaId; // ID da notícia sendo editada
@@ -56,23 +56,64 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
 
       // Valida a categoria selecionada
       final categoriasDaNoticia = widget.noticia!['categorias'] as List<dynamic>? ?? [];
+      print("Categorias da notícia: $categoriasDaNoticia");
       if (categoriasDaNoticia.isNotEmpty) {
-        _categoriaSelecionada = categoriasDaNoticia[0].toString();
+        int idCategoriaNoticia = categoriasDaNoticia[0];
+        _categoriaSelecionada = _categorias.firstWhere(
+              (categoria) => categoria['idCategoria'] == idCategoriaNoticia,
+          orElse: () => {'Nome': null}, // Prevenir erro caso não encontre
+        )['Nome'];
+      }
+
+     /* int idCategoriaSelecionada = _categorias.firstWhere(
+            (categoria) => categoria['nome'] == _categoriaSelecionada,
+        orElse: () => {'id': null},
+      )['id'];
+      */
+
+    ///  List<int> categoriasSelecionadas = [idCategoriaSelecionada];
+
+
+
+    }
+  }
+
+
+  Future<void> _carregarCategorias() async {
+    try {
+      List<Categoria> categorias = await _firestoreService.fetchCategorias();
+      setState(() {
+        _categorias = categorias.map((c) => {'idCategoria': c.idCategoria, 'Nome': c.Nome}).toList();
+      });
+
+      // Agora que as categorias foram carregadas, podemos definir a categoria da notícia
+      if (_isEditing) {
+        _definirCategoriaNoticia();
+      }
+    } catch (e) {
+      print("Erro ao carregar categorias: $e");
+    }
+  }
+
+
+  void _definirCategoriaNoticia() {
+    if (widget.noticia != null) {
+      final categoriasDaNoticia = widget.noticia!['categorias'] as List<dynamic>? ?? [];
+      if (categoriasDaNoticia.isNotEmpty) {
+        int idCategoriaNoticia = categoriasDaNoticia[0];
+
+        final categoriaEncontrada = _categorias.firstWhere(
+              (c) => c['idCategoria'] == idCategoriaNoticia,
+          orElse: () => {'Nome': ''} as Map<String, Object>,
+        );
+
+        setState(() {
+          _categoriaSelecionada = categoriaEncontrada['Nome'];
+        });
       }
     }
   }
 
-  Future<void> _carregarCategorias() async {
-    List<Categoria> categorias = await _firestoreService.fetchCategorias();
-    setState(() {
-      _categorias = categorias.map((categoria) => categoria.Nome).toList();
-
-      // Valida se a categoria selecionada ainda é válida
-      if (_categoriaSelecionada != null && !_categorias.contains(_categoriaSelecionada)) {
-        _categoriaSelecionada = null;
-      }
-    });
-  }
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -130,19 +171,30 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
         final String uid = currentUser.uid;
 
         // Obtém as categorias selecionadas
-        List<int> categoriasSelecionadas = _criandoCategoria
-            ? [await _firestoreService.createCategoria(_novaCategoriaController.text)]
-            : [await _firestoreService.getCategoriaIdByNome(_categoriaSelecionada!)];
+        List<int> categoriasSelecionadas = [];
+        if (_criandoCategoria) {
+          final novaCategoriaId = await _firestoreService.createCategoria(_novaCategoriaController.text);
+          categoriasSelecionadas.add(novaCategoriaId);
+        } else if (_categoriaSelecionada != null) {
+          final categoriaId = await _firestoreService.getCategoriaIdByNome(_categoriaSelecionada!);
+          categoriasSelecionadas.add(categoriaId);
+        } else {
+          throw Exception("Nenhuma categoria selecionada.");
+        }
+
 
         if (_isEditing) {
           // Atualiza a notícia existente
           await _firestoreService.editNoticia(_noticiaId!, {
             'titulo': _tituloController.text,
-            'texto': _tituloController.text,
+            'texto': _textoController.text,
             'dataInicioValidade': _dataInicioValidade,
             'dataFimValidade': _dataFimValidade,
             'categorias': categoriasSelecionadas,
+            'dataInclusao': widget.noticia!['dataInclusao'],  // Mantendo a data original
           });
+
+
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Notícia atualizada com sucesso!')),
@@ -204,18 +256,21 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                   validator: (value) => value == null || value.isEmpty ? 'Por favor, insira o texto' : null,
                 ),
                 DropdownButtonFormField<String>(
-                  value: _categorias.contains(_categoriaSelecionada) ? _categoriaSelecionada : null,
+                  value: _categoriaSelecionada,
                   decoration: const InputDecoration(labelText: 'Categoria'),
-                  items: _categorias.map((categoria) {
-                    return DropdownMenuItem(value: categoria, child: Text(categoria));
+                  items: _categorias.map<DropdownMenuItem<String>>((categoria) {
+                    return DropdownMenuItem<String>(
+                      value: categoria['Nome'] as String, // Forçando o tipo como String
+                      child: Text(categoria['Nome'] as String),
+                    );
                   }).toList(),
                   onChanged: (value) {
                     setState(() {
-                      _categoriaSelecionada = value;
+                      _categoriaSelecionada = value!;
                     });
                   },
-                  validator: (value) => value == null ? 'Por favor, selecione uma categoria' : null,
                 ),
+
                 ElevatedButton(
                   onPressed: () => _selectDateTime(context, true),
                   child: Text(_dataInicioValidade == null
