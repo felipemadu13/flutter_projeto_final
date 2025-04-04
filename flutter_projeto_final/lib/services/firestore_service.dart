@@ -233,6 +233,22 @@ class FirestoreService {
     }
   }
 
+  Future<String?> getCategoriaNomeById(int categoriaId) async {
+    try {
+      var snapshot = await _db.collection('categorias')
+          .where('idCategoria', isEqualTo: categoriaId)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.first['Nome'] as String?;
+      }
+      return null;
+    } catch (e) {
+      print('Erro ao buscar nome da categoria: $e');
+      return null;
+    }
+  }
 
   ///STORAGE
   Future<String?> uploadImage(File imageFile) async {
@@ -256,9 +272,20 @@ class FirestoreService {
     }
   }
 
+  Future<String?> getImagemUrlById(int idImagem) async {
+    try {
+      var snapshot = await _db.collection('imagens')
+          .where('idImagem', isEqualTo: idImagem)
+          .limit(1)
+          .get();
 
-
-
-
-
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.first['arquivoImagem'] as String?;
+      }
+      return null;
+    } catch (e) {
+      print('Erro ao buscar URL da imagem: $e');
+      return null;
+    }
+  }
 }

@@ -175,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     CircleAvatar(
                                       radius: 12, 
                                       backgroundImage: autorAvatar.isNotEmpty
-                                          ? FileImage(File(autorAvatar))
+                                          ? NetworkImage(autorAvatar) // Usa a URL do Firebase Storage
                                           : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
                                       backgroundColor: Colors.grey[200],
                                     ),
