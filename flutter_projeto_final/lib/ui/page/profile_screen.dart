@@ -92,58 +92,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: avatarUrl.isNotEmpty
-                        ? NetworkImage(avatarUrl)
-                        : const AssetImage('assets/images/default_image.png') as ImageProvider,
-                    backgroundColor: Colors.grey[200],
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    '$nome $sobrenome',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    email,
-                    style: const TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 30),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const EditProfileScreen()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 41, 109, 94),
+          : Center(
+            child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: avatarUrl.isNotEmpty
+                          ? NetworkImage(avatarUrl)
+                          : const AssetImage('assets/images/default_image.png') as ImageProvider,
+                      backgroundColor: Colors.grey[200],
                     ),
-                    child: const Text(
-                      'Editar Informações',
-                      style: TextStyle(color: Colors.white),
+                    const SizedBox(height: 20),
+                    Text(
+                      '$nome $sobrenome',
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _logout, // Chama o método de logout
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                    const SizedBox(height: 10),
+                    Text(
+                      email,
+                      style: const TextStyle(fontSize: 16, color: Colors.grey),
                     ),
-                    child: const Text(
-                      'Sair',
-                      style: TextStyle(color: Colors.white),
+                    const SizedBox(height: 30),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 41, 109, 94),
+                      ),
+                      child: const Text(
+                        'Editar Informações',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: _logout, // Chama o método de logout
+                      child: const Text(
+                        'Sair',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 16,
+              
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+          ),
       bottomNavigationBar: BottomNav(
         currentIndex: 3, // Índice da aba atual (3 para Perfil)
         onTap: (index) {
