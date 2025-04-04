@@ -17,7 +17,9 @@ class FirestoreService {
 
   /// getAllNoticias
   Future<List<Noticia>> fetchNoticias() async {
-    final snapshot = await _db.collection('noticias').get();
+    final snapshot = await _db.collection('noticias')
+        .orderBy('dataInclusao', descending: true)
+        .get();
     return snapshot.docs.map((doc) => Noticia.fromMap(doc.data())).toList();
   }
 
