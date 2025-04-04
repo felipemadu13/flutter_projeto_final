@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../widgets/bottom_nav.dart';
+import 'package:flutter_projeto_final/services/firestore_service.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -19,6 +20,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController sobrenomeController = TextEditingController();
   final TextEditingController avatarUrlController = TextEditingController();
+  final FirestoreService _firestoreService = FirestoreService();
 
   File? _selectedImage;
   bool isLoading = true;
@@ -86,26 +88,44 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
+
+
   Future<void> updateUserData() async {
     try {
       final currentUser = _auth.currentUser;
+      if (currentUser == null) return;
 
-      if (currentUser != null) {
-        await _firestore.collection('autores').doc(currentUser.uid).update({
-          'nome': nomeController.text.trim(),
-          'sobrenome': sobrenomeController.text.trim(),
-          'avatarUrl': avatarUrlController.text.trim(),
-        });
+      String? avatarUrl;
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dados atualizados com sucesso!')),
-        );
-
-        Navigator.pop(context); // Volta para a tela de perfil
+      // Se há uma nova imagem selecionada, faz o upload
+      if (_selectedImage != null) {
+        avatarUrl = await _firestoreService.uploadImage(_selectedImage!);
+        if (avatarUrl == null) {
+          throw Exception('Falha no upload da imagem');
+        }
       }
+
+      // Atualiza no Firestore
+      await _firestore.collection('autores').doc(currentUser.uid).update({
+        'nome': nomeController.text.trim(),
+        'sobrenome': sobrenomeController.text.trim(),
+        if (avatarUrl != null) 'avatarUrl': avatarUrl,
+        'ultimaAtualizacao': FieldValue.serverTimestamp(),
+      });
+
+      // Atualiza no Firebase Auth (opcional)
+      if (avatarUrl != null) {
+        await currentUser.updateProfile(photoURL: avatarUrl);
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Dados atualizados com sucesso!')),
+      );
+
+      Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao atualizar os dados: $e')),
+        SnackBar(content: Text('Erro ao atualizar: $e')),
       );
     }
   }

@@ -38,6 +38,7 @@ dependencies:
   flutterfire_cli: ^1.1.0
   flutter_datetime_picker: ^1.5.1
   textfield_tags: ^3.0.1
+  firebase_storage: ^12.4.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
