@@ -7,11 +7,14 @@ import 'dart:io';
 import 'package:flutter_projeto_final/services/firestore_service.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:textfield_tags/textfield_tags.dart';
+
 
 class NewsFormScreen extends StatefulWidget {
   final Map<String, dynamic>? noticia;
 
   const NewsFormScreen({super.key, this.noticia});
+
 
   @override
   _NewsFormScreenState createState() => _NewsFormScreenState();
@@ -22,20 +25,23 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _textoController = TextEditingController();
   final TextEditingController _novaCategoriaController = TextEditingController();
+  late TextfieldTagsController<String> textfieldTagsController;
+
   File? _selectedImage;
   DateTime? _dataInicioValidade;
   DateTime? _dataFimValidade;
   final FirestoreService _firestoreService = FirestoreService();
   bool _criandoCategoria = false;
   List<Map<String, dynamic>> _categorias = [];
-  String? _categoriaSelecionada;
+  List<String> _categoriaSelecionada = [];
   bool _isEditing = false; // Indica se estamos editando uma notícia existente
   int? _noticiaId; // ID da notícia sendo editada
-
+  List<String> _todasCategoriasNomes = [];
   @override
   void initState() {
     super.initState();
     _carregarCategorias();
+    textfieldTagsController = TextfieldTagsController<String>();
 
     // Verifica se estamos editando uma notícia existente
     if (widget.noticia != null) {
@@ -59,20 +65,14 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
       print("Categorias da notícia: $categoriasDaNoticia");
       if (categoriasDaNoticia.isNotEmpty) {
         int idCategoriaNoticia = categoriasDaNoticia[0];
-        _categoriaSelecionada = _categorias.firstWhere(
+        String categoriaNome = _categorias.firstWhere(
               (categoria) => categoria['idCategoria'] == idCategoriaNoticia,
-          orElse: () => {'Nome': null}, // Prevenir erro caso não encontre
-        )['Nome'];
+          orElse: () => {'Nome': ''},
+        )['Nome'] as String;
+        if (categoriaNome.isNotEmpty) {
+          _categoriaSelecionada = [categoriaNome];
+        }
       }
-
-     /* int idCategoriaSelecionada = _categorias.firstWhere(
-            (categoria) => categoria['nome'] == _categoriaSelecionada,
-        orElse: () => {'id': null},
-      )['id'];
-      */
-
-    ///  List<int> categoriasSelecionadas = [idCategoriaSelecionada];
-
 
 
     }
@@ -84,9 +84,9 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
       List<Categoria> categorias = await _firestoreService.fetchCategorias();
       setState(() {
         _categorias = categorias.map((c) => {'idCategoria': c.idCategoria, 'Nome': c.Nome}).toList();
+        _todasCategoriasNomes = _categorias.map((c) => c['Nome'] as String).toList();
       });
 
-      // Agora que as categorias foram carregadas, podemos definir a categoria da notícia
       if (_isEditing) {
         _definirCategoriaNoticia();
       }
@@ -100,16 +100,18 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
     if (widget.noticia != null) {
       final categoriasDaNoticia = widget.noticia!['categorias'] as List<dynamic>? ?? [];
       if (categoriasDaNoticia.isNotEmpty) {
-        int idCategoriaNoticia = categoriasDaNoticia[0];
-
-        final categoriaEncontrada = _categorias.firstWhere(
-              (c) => c['idCategoria'] == idCategoriaNoticia,
-          orElse: () => {'Nome': ''} as Map<String, Object>,
-        );
+        final categoriasEncontradas = _categorias
+            .where((c) => categoriasDaNoticia.contains(c['idCategoria']))
+            .toList();
 
         setState(() {
-          _categoriaSelecionada = categoriaEncontrada['Nome'];
+          _categoriaSelecionada = categoriasEncontradas
+              .map((c) => c['Nome'] as String)
+              .where((nome) => nome.isNotEmpty)
+              .toList();
         });
+
+
       }
     }
   }
@@ -160,42 +162,76 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       try {
+        List<Map<String, dynamic>> _categorias = [];
         // Obtém o usuário atual
         final currentUser = FirebaseAuth.instance.currentUser;
-
         if (currentUser == null) {
           throw Exception('Usuário não autenticado.');
         }
 
-        // Obtém o UID do usuário atual
         final String uid = currentUser.uid;
 
-        // Obtém as categorias selecionadas
+        // Obtém IDs de todas as categorias selecionadas
         List<int> categoriasSelecionadas = [];
-        if (_criandoCategoria) {
-          final novaCategoriaId = await _firestoreService.createCategoria(_novaCategoriaController.text);
-          categoriasSelecionadas.add(novaCategoriaId);
-        } else if (_categoriaSelecionada != null) {
-          final categoriaId = await _firestoreService.getCategoriaIdByNome(_categoriaSelecionada!);
-          categoriasSelecionadas.add(categoriaId);
-        } else {
+        for (var categoriaNome in _categoriaSelecionada) {
+          // Verifica na lista local primeiro
+          var categoriaExistente = _categorias.firstWhere(
+                (c) => c['Nome'] == categoriaNome,
+            orElse: () => <String, dynamic>{'idCategoria': null},
+          );
+
+          if (categoriaExistente['idCategoria'] != null) {
+            categoriasSelecionadas.add(categoriaExistente['idCategoria'] as int);
+          } else {
+            // Se não existir localmente, verifica no Firestore e cria se necessário
+            try {
+              final novaCategoriaId = await _firestoreService.getCategoriaIdByNome(categoriaNome);
+              categoriasSelecionadas.add(novaCategoriaId);
+
+              // Atualiza a lista local com a nova categoria
+              setState(() {
+                _categorias.add({
+                  'idCategoria': novaCategoriaId,
+                  'Nome': categoriaNome
+                });
+              });
+            } catch (e) {
+              print('Erro ao processar categoria $categoriaNome: $e');
+              // Opcional: mostrar feedback ao usuário
+            }
+          }
+        }
+
+        if (categoriasSelecionadas.isEmpty) {
           throw Exception("Nenhuma categoria selecionada.");
         }
 
-
         if (_isEditing) {
-          // Atualiza a notícia existente
-          await _firestoreService.editNoticia(_noticiaId!, {
+          // Prepara os dados para atualização
+          Map<String, dynamic> updateData = {
             'titulo': _tituloController.text,
             'texto': _textoController.text,
             'dataInicioValidade': _dataInicioValidade,
             'dataFimValidade': _dataFimValidade,
             'categorias': categoriasSelecionadas,
-            'dataInclusao': widget.noticia!['dataInclusao'],  // Mantendo a data original
-          });
+          };
 
+          // Verifica e mantém a data de inclusão original se existir
+          if (widget.noticia != null && widget.noticia!.containsKey('dataInclusao')) {
+            if (widget.noticia!['dataInclusao'] is Timestamp) {
+              updateData['dataInclusao'] = (widget.noticia!['dataInclusao'] as Timestamp).toDate();
+            } else if (widget.noticia!['dataInclusao'] is DateTime) {
+              updateData['dataInclusao'] = widget.noticia!['dataInclusao'];
+            } else {
+              // Se não houver data de inclusão válida, usa a data atual
+              updateData['dataInclusao'] = DateTime.now();
+            }
+          } else {
+            // Se não houver data de inclusão no documento, usa a data atual
+            updateData['dataInclusao'] = DateTime.now();
+          }
 
-
+          await _firestoreService.editNoticia(_noticiaId!, updateData);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Notícia atualizada com sucesso!')),
           );
@@ -255,21 +291,91 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                   maxLines: 5,
                   validator: (value) => value == null || value.isEmpty ? 'Por favor, insira o texto' : null,
                 ),
-                DropdownButtonFormField<String>(
-                  value: _categoriaSelecionada,
-                  decoration: const InputDecoration(labelText: 'Categoria'),
-                  items: _categorias.map<DropdownMenuItem<String>>((categoria) {
-                    return DropdownMenuItem<String>(
-                      value: categoria['Nome'] as String, // Forçando o tipo como String
-                      child: Text(categoria['Nome'] as String),
+                Autocomplete<String>(
+                  optionsBuilder: (TextEditingValue textEditingValue) {
+                    if (textEditingValue.text.isEmpty) {
+                      return const Iterable<String>.empty();
+                    }
+                    return _todasCategoriasNomes.where((categoria) =>
+                        categoria.toLowerCase().contains(textEditingValue.text.toLowerCase())
                     );
-                  }).toList(),
-                  onChanged: (value) {
+                  },
+                  onSelected: (String selection) {
                     setState(() {
-                      _categoriaSelecionada = value!;
+                      if (!_categoriaSelecionada.contains(selection)) {
+                        _categoriaSelecionada.add(selection);
+                        textfieldTagsController.addTag(selection);
+                      }
                     });
                   },
+                  fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+                    return TextField(
+                      controller: textEditingController,
+                      focusNode: focusNode,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "Digite uma categoria",
+                        hintText: "Comece a digitar para ver sugestões",
+                      ),
+                      onSubmitted: (value) {
+                        if (value.trim().isNotEmpty && !_categoriaSelecionada.contains(value)) {
+                          setState(() {
+                            _categoriaSelecionada.add(value);
+                            textfieldTagsController.addTag(value);
+                          });
+                        }
+                        textEditingController.clear();
+                      },
+                    );
+                  },
+                  optionsViewBuilder: (context, onSelected, options) {
+                    return Align(
+                      alignment: Alignment.topLeft,
+                      child: Material(
+                        elevation: 4.0,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 200,
+                            maxWidth: MediaQuery.of(context).size.width * 0.8,
+                          ),
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            itemCount: options.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final String option = options.elementAt(index);
+                              return ListTile(
+                                title: Text(option),
+                                onTap: () {
+                                  onSelected(option);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
+
+                const SizedBox(height: 20),
+
+                Wrap(
+                  spacing: 8,
+                  children: _categoriaSelecionada.map(
+                        (tag) => Chip(
+                      label: Text(tag),
+                      deleteIcon: const Icon(Icons.close),
+                      onDeleted: () {
+                        setState(() {
+                          _categoriaSelecionada.remove(tag);
+                          textfieldTagsController.removeTag(tag);
+                        });
+                      },
+                    ),
+                  ).toList(),
+                ),
+
 
                 ElevatedButton(
                   onPressed: () => _selectDateTime(context, true),
