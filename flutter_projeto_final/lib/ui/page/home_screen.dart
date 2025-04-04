@@ -31,7 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> fetchNoticias() async {
     final result = await _firestoreService.fetchNoticias();
     setState(() {
-      noticias = result;
+      final now = DateTime.now();
+      noticias = result.where((noticia) => noticia.dataInicioValidade.isBefore(now)).toList();
       filteredNoticias = noticias;
     });
   }
