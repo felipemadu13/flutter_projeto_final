@@ -24,6 +24,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   final TextEditingController _textoController = TextEditingController();
   final TextEditingController _novaCategoriaController = TextEditingController();
   File? _selectedImage;
+  final String _defaultImagePath = 'assets/images/default_image.jpg'; // Caminho da imagem padrão
   DateTime? _dataInicioValidade;
   DateTime? _dataFimValidade;
   final FirestoreService _firestoreService = FirestoreService();
@@ -32,6 +33,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   String? _categoriaSelecionada;
   bool _isEditing = false; // Indica se estamos editando uma notícia existente
   int? _noticiaId; // ID da notícia sendo editada
+  String? _imageUrl; // URL da imagem armazenada no banco
 
   @override
   void initState() {
@@ -44,11 +46,13 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
       _noticiaId = widget.noticia!['idnoticia'];
       _tituloController.text = widget.noticia!['titulo'];
       _textoController.text = widget.noticia!['texto'];
+
       if (widget.noticia!['dataInicioValidade'] is Timestamp) {
         _dataInicioValidade = (widget.noticia!['dataInicioValidade'] as Timestamp).toDate();
       } else if (widget.noticia!['dataInicioValidade'] is DateTime) {
         _dataInicioValidade = widget.noticia!['dataInicioValidade'];
       }
+
       if (widget.noticia!['dataFimValidade'] is Timestamp) {
         _dataFimValidade = (widget.noticia!['dataFimValidade'] as Timestamp).toDate();
       } else if (widget.noticia!['dataFimValidade'] is DateTime) {
@@ -59,6 +63,14 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
       final categoriasDaNoticia = widget.noticia!['categorias'] as List<dynamic>? ?? [];
       if (categoriasDaNoticia.isNotEmpty) {
         _categoriaSelecionada = categoriasDaNoticia[0].toString();
+      }
+
+      // Carrega a imagem associada à notícia, se existir
+      if (widget.noticia!['imagemUrl'] != null && widget.noticia!['imagemUrl'].isNotEmpty) {
+        setState(() {
+          _selectedImage = null; // Não usamos um arquivo local aqui
+          _imageUrl = widget.noticia!['imagemUrl']; // URL da imagem armazenada no banco
+        });
       }
     }
   }
@@ -82,6 +94,10 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
       setState(() {
         _selectedImage = File(pickedFile.path);
       });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nenhuma imagem selecionada.')),
+      );
     }
   }
 
@@ -169,10 +185,8 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
           );
         }
 
-        // Retorna para a tela anterior
         Navigator.pop(context, true);
       } catch (e) {
-        // Exibe uma mensagem de erro
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erro ao salvar notícia: $e')),
         );
@@ -186,7 +200,10 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
       appBar: AppBar(
         centerTitle: true,
         automaticallyImplyLeading: false,
-        title: Text(_isEditing ? 'Editar Notícia' : 'Cadastrar Notícia', style: TextStyle(color: Colors.grey),),
+        title: Text(
+          _isEditing ? 'Editar Notícia' : 'Cadastrar Notícia',
+          style: TextStyle(color: Colors.grey),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -195,49 +212,156 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
             key: _formKey,
             child: Column(
               children: [
+                // Exibe a imagem selecionada ou a imagem padrão com funcionalidade de clique
+                GestureDetector(
+                  onTap: _pickImage, // Chama o método para selecionar a imagem
+                  child: SizedBox(
+                    height: 200,
+                    width: double.infinity,
+                    child: _selectedImage != null
+                        ? Image.file(
+                            _selectedImage!,
+                            fit: BoxFit.cover,
+                          )
+                        : (_imageUrl != null && _imageUrl!.isNotEmpty
+                            ? Image.network(
+                                _imageUrl!,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                _defaultImagePath,
+                                fit: BoxFit.cover,
+                              )),
+                  ),
+                ),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: _tituloController,
                   decoration: const InputDecoration(labelText: 'Título'),
-                  validator: (value) => value == null || value.isEmpty ? 'Por favor, insira o título' : null,
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Por favor, insira o título' : null,
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: _textoController,
                   decoration: const InputDecoration(labelText: 'Texto'),
                   maxLines: 5,
-                  validator: (value) => value == null || value.isEmpty ? 'Por favor, insira o texto' : null,
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Por favor, insira o texto' : null,
                 ),
                 DropdownButtonFormField<String>(
-                  value: _categorias.contains(_categoriaSelecionada) ? _categoriaSelecionada : null,
+                  value: _categorias.contains(_categoriaSelecionada)
+                      ? _categoriaSelecionada
+                      : null,
                   decoration: const InputDecoration(labelText: 'Categoria'),
                   items: _categorias.map((categoria) {
-                    return DropdownMenuItem(value: categoria, child: Text(categoria));
+                    return DropdownMenuItem(
+                        value: categoria, child: Text(categoria));
                   }).toList(),
                   onChanged: (value) {
                     setState(() {
                       _categoriaSelecionada = value;
                     });
                   },
-                  validator: (value) => value == null ? 'Por favor, selecione uma categoria' : null,
+                  validator: (value) =>
+                      value == null ? 'Por favor, selecione uma categoria' : null,
                 ),
-                ElevatedButton(
-                  onPressed: () => _selectDateTime(context, true),
-                  child: Text(_dataInicioValidade == null
-                      ? 'Selecionar Data e Hora de Início'
-                      : 'Início: ${DateFormat('dd/MM/yyyy HH:mm').format(_dataInicioValidade!)}'),
+                TextFormField(
+                  readOnly: true,
+                  controller: TextEditingController(
+                    text: _dataInicioValidade != null
+                        ? DateFormat('dd/MM/yyyy HH:mm').format(_dataInicioValidade!)
+                        : '',
+                  ),
+                  decoration: const InputDecoration(
+                    labelText: 'Data de Início',
+                    border: OutlineInputBorder(),
+                  ),
+                  onTap: () async {
+                    final DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: _dataInicioValidade ?? DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                    );
+                    if (pickedDate != null) {
+                      final TimeOfDay? pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(_dataInicioValidade ?? DateTime.now()),
+                      );
+                      if (pickedTime != null) {
+                        setState(() {
+                          _dataInicioValidade = DateTime(
+                            pickedDate.year,
+                            pickedDate.month,
+                            pickedDate.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          );
+                        });
+                      }
+                    }
+                  },
+                  validator: (value) =>
+                      _dataInicioValidade == null ? 'Por favor, selecione a data de início' : null,
                 ),
-                ElevatedButton(
-                  onPressed: () => _selectDateTime(context, false),
-                  child: Text(_dataFimValidade == null
-                      ? 'Selecionar Data e Hora de Fim'
-                      : 'Fim: ${DateFormat('dd/MM/yyyy HH:mm').format(_dataFimValidade!)}'),
-                ),
-                ElevatedButton(
-                  onPressed: _pickImage,
-                  child: const Text('Selecionar Imagem'),
+                const SizedBox(height: 16),
+                TextFormField(
+                  readOnly: true,
+                  controller: TextEditingController(
+                    text: _dataFimValidade != null
+                        ? DateFormat('dd/MM/yyyy HH:mm').format(_dataFimValidade!)
+                        : '',
+                  ),
+                  decoration: const InputDecoration(
+                    labelText: 'Data de Validade',
+                    border: OutlineInputBorder(),
+                  ),
+                  onTap: () async {
+                    final DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: _dataFimValidade ?? DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                    );
+                    if (pickedDate != null) {
+                      final TimeOfDay? pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(_dataFimValidade ?? DateTime.now()),
+                      );
+                      if (pickedTime != null) {
+                        setState(() {
+                          _dataFimValidade = DateTime(
+                            pickedDate.year,
+                            pickedDate.month,
+                            pickedDate.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          );
+                        });
+                      }
+                    }
+                  },
+                  validator: (value) =>
+                      _dataFimValidade == null ? 'Por favor, selecione a data de validade' : null,
                 ),
                 ElevatedButton(
                   onPressed: _submitForm,
-                  child: const Text('Salvar Notícia'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 41, 109, 94), // Cor de fundo
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8), // Borda arredondada
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32), // Padding interno
+                  ),
+                  child: const Text(
+                    'Salvar Notícia',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white, // Cor do texto
+                    ),
+                  ),
                 ),
                 if (_isEditing)
                   ElevatedButton(

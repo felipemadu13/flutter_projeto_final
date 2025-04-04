@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_projeto_final/ui/widgets/bottom_nav.dart';
-import 'edit_profile_screen.dart'; // Import da nova tela de edição
-import 'login_screen.dart'; // Import da tela de login
+import 'edit_profile_screen.dart'; 
+import 'login_screen.dart'; 
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -102,8 +104,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     CircleAvatar(
                       radius: 50,
                       backgroundImage: avatarUrl.isNotEmpty
-                          ? NetworkImage(avatarUrl)
-                          : const AssetImage('assets/images/default_image.png') as ImageProvider,
+                          ? (avatarUrl.startsWith('http') // Verifica se é uma URL de rede
+                              ? NetworkImage(avatarUrl) as ImageProvider
+                              : FileImage(File(avatarUrl)))
+                          : const AssetImage('assets/images/default_image.png'),
                       backgroundColor: Colors.grey[200],
                     ),
                     const SizedBox(height: 20),

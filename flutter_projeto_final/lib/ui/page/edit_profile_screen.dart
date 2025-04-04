@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import '../widgets/bottom_nav.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -109,6 +110,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
+  void _navigateToScreen(BuildContext context, int index) {
+    if (index == 0) {
+      Navigator.pushNamed(context, '/home');
+    } else if (index == 1) {
+      Navigator.pushNamed(context, '/news_form');
+    } else if (index == 2) {
+      Navigator.pushNamed(context, '/schedule');
+    } else if (index == 3) {
+      Navigator.pushNamed(context, '/profile');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,6 +177,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
               ),
             ),
+      bottomNavigationBar: BottomNav(
+        currentIndex: 3, // Define o índice atual como "Perfil"
+        onTap: (index) {
+          _navigateToScreen(context, index);
+        },
+      ),
     );
   }
 
