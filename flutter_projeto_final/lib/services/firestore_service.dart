@@ -144,6 +144,24 @@ class FirestoreService {
   }
 
 
+  Future<Autor?> getAutorByEmail(String email) async {
+    try {
+      final query = await _db.collection('autores')
+          .where('email', isEqualTo: email)
+          .limit(1)
+          .get();
+
+      if (query.docs.isNotEmpty) {
+        return Autor.fromFirestore(query.docs.first);
+      }
+      return null;
+    } catch (e) {
+      print('Erro ao buscar autor por email: $e');
+      return null;
+    }
+  }
+
+
   /// getByAutorId
   Future<Autor?> getAutorById(String uid) async {
     try {
