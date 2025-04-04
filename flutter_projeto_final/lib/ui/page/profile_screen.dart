@@ -74,10 +74,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _logout() async {
     try {
-      await _auth.signOut(); // Faz o logout do Firebase
+      await _auth.signOut(); 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()), // Redireciona para a tela de login
+        MaterialPageRoute(builder: (context) => const LoginScreen()), 
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -104,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     CircleAvatar(
                       radius: 50,
                       backgroundImage: avatarUrl.isNotEmpty
-                          ? (avatarUrl.startsWith('http') // Verifica se é uma URL de rede
+                          ? (avatarUrl.startsWith('http') 
                               ? NetworkImage(avatarUrl) as ImageProvider
                               : FileImage(File(avatarUrl)))
                           : const AssetImage('assets/images/default_image.png'),
@@ -138,7 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 20),
                     GestureDetector(
-                      onTap: _logout, // Chama o método de logout
+                      onTap: _logout, 
                       child: const Text(
                         'Sair',
                         style: TextStyle(
@@ -153,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
           ),
       bottomNavigationBar: BottomNav(
-        currentIndex: 3, // Índice da aba atual (3 para Perfil)
+        currentIndex: 3, 
         onTap: (index) {
           _navigateToScreen(context, index);
         },

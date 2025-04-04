@@ -155,7 +155,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         ),
       ),
       bottomNavigationBar: BottomNav(
-        currentIndex: 2, // Índice da aba atual (2 para Agendamentos)
+        currentIndex: 2, 
         onTap: (index) {
           _navigateToScreen(context, index);
         },
