@@ -30,15 +30,15 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   late TextfieldTagsController<String> textfieldTagsController;
 
   File? _selectedImage;
-  final String _defaultImagePath = 'assets/images/default_image.jpg'; // Caminho da imagem padrão
+  final String _defaultImagePath = 'assets/images/default_image.jpg'; 
   DateTime? _dataInicioValidade;
   DateTime? _dataFimValidade;
   final FirestoreService _firestoreService = FirestoreService();
   bool _criandoCategoria = false;
   List<Map<String, dynamic>> _categorias = [];
   List<String> _categoriaSelecionada = [];
-  bool _isEditing = false; // Indica se estamos editando uma notícia existente
-  int? _noticiaId; // ID da notícia sendo editada
+  bool _isEditing = false; 
+  int? _noticiaId; 
   String? _imageUrl;
   List<String> _todasCategoriasNomes = [];
   @override
@@ -47,7 +47,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
     _carregarCategorias();
     textfieldTagsController = TextfieldTagsController<String>();
 
-    // Verifica se estamos editando uma notícia existente
+    
     if (widget.noticia != null) {
       _isEditing = true;
       _noticiaId = widget.noticia!['idnoticia'];
@@ -66,7 +66,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
         _dataFimValidade = widget.noticia!['dataFimValidade'];
       }
 
-      // Valida a categoria selecionada
+     
       final categoriasDaNoticia = widget.noticia!['categorias'] as List<dynamic>? ?? [];
       print("Categorias da notícia: $categoriasDaNoticia");
       if (categoriasDaNoticia.isNotEmpty) {
@@ -172,7 +172,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
 
-      // Validação das datas
+     
       if (_dataInicioValidade != null &&
           _dataFimValidade != null &&
           _dataInicioValidade!.isAfter(_dataFimValidade!)) {
@@ -196,7 +196,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
       try {
         List<int> imagensAtualizadas = [];
         List<Map<String, dynamic>> _categorias = [];
-        // Obtém o usuário atual
+        
         final currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser == null) {
           throw Exception('Usuário não autenticado.');
@@ -209,15 +209,15 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
         }
 
         if (_selectedImage != null) {
-          // Faz upload para o ImgBB e obtém a URL
+          
           String? urlImagem = await _firestoreService.uploadImageToImgBB(
               _selectedImage!);
           if (urlImagem == null) throw Exception("Falha no upload da imagem");
 
-          // Cria um novo ImagemModel no Firestore e obtém o ID
+        
           int novoIdImagem = DateTime
               .now()
-              .millisecondsSinceEpoch; // ou um ID único
+              .millisecondsSinceEpoch; 
           await _firestoreService.salvarImagem(
             ImagemModel(
               idImagem: novoIdImagem,
@@ -229,10 +229,10 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
         }
 
 
-        // Obtém IDs de todas as categorias selecionadas
+        
         List<int> categoriasSelecionadas = [];
         for (var categoriaNome in _categoriaSelecionada) {
-          // Verifica na lista local primeiro
+          
           var categoriaExistente = _categorias.firstWhere(
                 (c) => c['Nome'] == categoriaNome,
             orElse: () => <String, dynamic>{'idCategoria': null},
@@ -241,12 +241,12 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
           if (categoriaExistente['idCategoria'] != null) {
             categoriasSelecionadas.add(categoriaExistente['idCategoria'] as int);
           } else {
-            // Se não existir localmente, verifica no Firestore e cria se necessário
+            
             try {
               final novaCategoriaId = await _firestoreService.getCategoriaIdByNome(categoriaNome);
               categoriasSelecionadas.add(novaCategoriaId);
 
-              // Atualiza a lista local com a nova categoria
+             
               setState(() {
                 _categorias.add({
                   'idCategoria': novaCategoriaId,
@@ -255,7 +255,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
               });
             } catch (e) {
               print('Erro ao processar categoria $categoriaNome');
-              // Opcional: mostrar feedback ao usuário
+              
             }
           }
         }
@@ -265,7 +265,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
         }
 
         if (_isEditing) {
-          // Prepara os dados para atualização
+          
           Map<String, dynamic> updateData = {
             'titulo': _tituloController.text,
             'texto': _textoController.text,
@@ -276,18 +276,18 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
           };
 
 
-          // Verifica e mantém a data de inclusão original se existir
+          
           if (widget.noticia != null && widget.noticia!.containsKey('dataInclusao')) {
             if (widget.noticia!['dataInclusao'] is Timestamp) {
               updateData['dataInclusao'] = (widget.noticia!['dataInclusao'] as Timestamp).toDate();
             } else if (widget.noticia!['dataInclusao'] is DateTime) {
               updateData['dataInclusao'] = widget.noticia!['dataInclusao'];
             } else {
-              // Se não houver data de inclusão válida, usa a data atual
+              
               updateData['dataInclusao'] = DateTime.now();
             }
           } else {
-            // Se não houver data de inclusão no documento, usa a data atual
+            
             updateData['dataInclusao'] = DateTime.now();
           }
 
@@ -296,7 +296,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
             const SnackBar(content: Text('Notícia atualizada com sucesso!')),
           );
         } else {
-          // Cria uma nova notícia
+          
           final noticia = Noticia(
             idnoticia: DateTime.now().millisecondsSinceEpoch,
             autorId: uid,
@@ -343,9 +343,9 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
             key: _formKey,
             child: Column(
               children: [
-                // Exibe a imagem selecionada ou a imagem padrão com funcionalidade de clique
+                
                 GestureDetector(
-                  onTap: _pickImage, // Chama o método para selecionar a imagem
+                  onTap: _pickImage,
                   child: SizedBox(
                     height: 200,
                     width: double.infinity,
@@ -482,18 +482,18 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                 ElevatedButton(
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 41, 109, 94), // Cor de fundo
+                    backgroundColor: const Color.fromARGB(255, 41, 109, 94), 
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8), // Borda arredondada
+                      borderRadius: BorderRadius.circular(8), 
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16), // Padding interno
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16), 
                   ),
                   child: const Text(
                     'Salvar Notícia',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white, // Cor do texto
+                      color: Colors.white, 
                     ),
                   ),
                 ),
@@ -526,7 +526,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Notícia excluída com sucesso!')),
                           );
-                          Navigator.pop(context, true); // Retorna para a tela anterior
+                          Navigator.pop(context, true); 
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Erro ao excluir notícia')),
@@ -535,7 +535,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, // Cor do botão
+                      backgroundColor: Colors.red, 
                     ),
                     child: const Text('Deletar Notícia'),
                   ),
@@ -545,7 +545,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
         ),
       ),
       bottomNavigationBar: BottomNav(
-        currentIndex: 1, // Índice da aba atual (1 para Criar)
+        currentIndex: 1, 
         onTap: (index) {
           _navigateToScreen(context, index);
         },

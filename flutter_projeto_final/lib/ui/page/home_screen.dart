@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> deleteNoticia(int noticiaId) async {
     await _firestoreService.deleteNoticia(noticiaId);
-    fetchNoticias(); // Atualiza a lista após a exclusão
+    fetchNoticias(); 
   }
 
   String _formatTimeDifference(DateTime dataInicioValidade) {
@@ -141,9 +141,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             },
                             child: AspectRatio(
-                              aspectRatio: 16 / 9, // Substitua pela proporção da sua imagem default_image.jpg
+                              aspectRatio: 16 / 9, 
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5), // Define o border radius de 8px
+                                borderRadius: BorderRadius.circular(5), 
                                 child: Image.network(
                                   imagemUrl,
                                   errorBuilder: (context, error, stackTrace) {
@@ -152,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fit: BoxFit.cover,
                                     );
                                   },
-                                  fit: BoxFit.cover, // Garante que a imagem preencha o espaço
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                             ),
@@ -176,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     CircleAvatar(
                                       radius: 12, 
                                       backgroundImage: autorAvatar.isNotEmpty
-                                          ? NetworkImage(autorAvatar) // Usa a URL do Firebase Storage
+                                          ? NetworkImage(autorAvatar) 
                                           : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
                                       backgroundColor: Colors.grey[200],
                                     ),
@@ -217,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       bottomNavigationBar: BottomNav(
-        currentIndex: 0, // Índice da aba atual (0 para Home)
+        currentIndex: 0, 
         onTap: (index) {
           _navigateToScreen(context, index);
         },

@@ -15,7 +15,7 @@ class Autor {
     required this.avatarUrl,
   });
 
-  // Factory method para criar um Autor a partir de um documento do Firestore
+
   factory Autor.fromFirestore(DocumentSnapshot docSnapshot) {
     final data = docSnapshot.data() as Map<String, dynamic>;
     return Autor(

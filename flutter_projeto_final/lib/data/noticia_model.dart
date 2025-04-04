@@ -23,7 +23,7 @@ class Noticia {
     this.dataFimValidade,
   });
 
-  // Método para converter um Map em uma instância de Noticia
+
   factory Noticia.fromMap(Map<String, dynamic> data) {
     return Noticia(
       idnoticia: data['idNoticia'] ?? 0,
@@ -39,7 +39,7 @@ class Noticia {
   }
 
 
-  // Método para converter uma instância de Noticia em um Map
+ 
   Map<String, dynamic> toMap() {
     return {
       'idNoticia': idnoticia,

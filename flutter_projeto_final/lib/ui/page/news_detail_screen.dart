@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart'; // Adicione esta importação
+import 'package:firebase_storage/firebase_storage.dart'; 
 import '../../services/firestore_service.dart';
 import '../../data/noticia_model.dart';
 import '../../data/autor_model.dart';
@@ -39,7 +39,7 @@ class NewsDetailScreen extends StatelessWidget {
 
               String autorNome = autorSnapshot.data?.nome ?? "Autor desconhecido";
 
-              return SingleChildScrollView( // Adicionado para permitir o scroll
+              return SingleChildScrollView( 
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: FutureBuilder<String?>(
@@ -70,14 +70,14 @@ class NewsDetailScreen extends StatelessWidget {
                           Text("Por $autorNome", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                           const SizedBox(height: 16),
                           FutureBuilder<String?>(
-                            future: firestoreService.getImagemUrlById(noticia.imagens[0]), // Busca a URL da imagem pelo ID
+                            future: firestoreService.getImagemUrlById(noticia.imagens[0]), 
                             builder: (context, imageSnapshot) {
                               if (imageSnapshot.connectionState == ConnectionState.waiting) {
                                 return const Center(child: CircularProgressIndicator());
                               }
                               if (imageSnapshot.hasError || !imageSnapshot.hasData) {
                                 return Image.asset(
-                                  'assets/images/default_image.jpg', // Imagem padrão em caso de erro
+                                  'assets/images/default_image.jpg', 
                                   fit: BoxFit.cover,
                                 );
                               }
@@ -89,7 +89,7 @@ class NewsDetailScreen extends StatelessWidget {
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Image.asset(
-                                    'assets/images/default_image.jpg', // Imagem padrão em caso de erro
+                                    'assets/images/default_image.jpg', 
                                     fit: BoxFit.cover,
                                   );
                                 },
@@ -109,7 +109,7 @@ class NewsDetailScreen extends StatelessWidget {
         },
       ),
       bottomNavigationBar: BottomNav(
-        currentIndex: 0, // Define o índice atual (ajuste conforme necessário)
+        currentIndex: 0, 
         onTap: (index) {
           _navigateToScreen(context, index);
         },

@@ -97,7 +97,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
       String? avatarUrl;
 
-      // Se há uma nova imagem selecionada, faz o upload
+    
       if (_selectedImage != null) {
         avatarUrl = await _firestoreService.uploadImage(_selectedImage!);
         if (avatarUrl == null) {
@@ -105,7 +105,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         }
       }
 
-      // Atualiza no Firestore
+    
       await _firestore.collection('autores').doc(currentUser.uid).update({
         'nome': nomeController.text.trim(),
         'sobrenome': sobrenomeController.text.trim(),
@@ -113,7 +113,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         'ultimaAtualizacao': FieldValue.serverTimestamp(),
       });
 
-      // Atualiza no Firebase Auth (opcional)
+    
       if (avatarUrl != null) {
         await currentUser.updateProfile(photoURL: avatarUrl);
       }
@@ -198,7 +198,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
             ),
       bottomNavigationBar: BottomNav(
-        currentIndex: 3, // Define o índice atual como "Perfil"
+        currentIndex: 3, 
         onTap: (index) {
           _navigateToScreen(context, index);
         },

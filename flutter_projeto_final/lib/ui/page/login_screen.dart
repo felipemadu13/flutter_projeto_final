@@ -25,18 +25,18 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      // Autentica o usuário com FirebaseAuth
+      
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: senhaController.text.trim(),
       );
 
-      // Verifica se o e-mail do usuário está verificado
+     
       if (userCredential.user != null && !userCredential.user!.emailVerified) {
-        // Desconecta o usuário
+    
         await _auth.signOut();
 
-        // Exibe uma mensagem informando que o e-mail precisa ser verificado
+       
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      // Navega para a HomeScreen após o login bem-sucedido
+     
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -68,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
       } else {
-        // Outros erros
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro ao realizar o login'),
@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
         isLoading = false;
       });
 
-      // Erro inesperado
+    
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Erro inesperado'),
@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _resetPassword() async {
     final TextEditingController resetEmailController = TextEditingController();
 
-    // Exibe um diálogo para o usuário inserir o e-mail
+  
     await showDialog(
       context: context,
       builder: (context) {
@@ -129,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     );
                   } else {
-                    // Exibe mensagem de erro genérico
+                    
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text("Erro ao enviar e-mail de redefinição: ${e.message}"),
@@ -255,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    // Libera os controladores de texto ao sair da tela
+    
     emailController.dispose();
     senhaController.dispose();
     super.dispose();
