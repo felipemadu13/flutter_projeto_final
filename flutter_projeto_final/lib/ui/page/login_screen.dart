@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (e.code == 'invalid-credential') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('E-mail ou senha inválidos. Verifique e tente novamente. ${e.code}'),
+            content: Text('E-mail ou senha inválidos. Verifique e tente novamente.'),
           ),
         );
       } else {
@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Erro inesperado
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Erro inesperado: $e'),
+          content: Text('Erro inesperado'),
         ),
       );
     }

@@ -96,7 +96,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
         _definirCategoriaNoticia();
       }
     } catch (e) {
-      print("Erro ao carregar categorias: $e");
+      print("Erro ao carregar categorias");
     }
   }
 
@@ -219,7 +219,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                 });
               });
             } catch (e) {
-              print('Erro ao processar categoria $categoriaNome: $e');
+              print('Erro ao processar categoria $categoriaNome');
               // Opcional: mostrar feedback ao usuário
             }
           }
@@ -282,7 +282,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
         Navigator.pop(context, true);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao salvar notícia: $e')),
+          SnackBar(content: Text('Erro ao salvar notícia $e')),
         );
       }
     }
@@ -441,10 +441,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                       ? 'Selecionar Data e Hora de Fim'
                       : 'Fim: ${DateFormat('dd/MM/yyyy HH:mm').format(_dataFimValidade!)}'),
                 ),
-                ElevatedButton(
-                  onPressed: _pickImage,
-                  child: const Text('Selecionar Imagem'),
-                ),
+               
                 ElevatedButton(
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
@@ -452,7 +449,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8), // Borda arredondada
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32), // Padding interno
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16), // Padding interno
                   ),
                   child: const Text(
                     'Salvar Notícia',
@@ -495,7 +492,7 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
                           Navigator.pop(context, true); // Retorna para a tela anterior
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Erro ao excluir notícia: $e')),
+                            SnackBar(content: Text('Erro ao excluir notícia')),
                           );
                         }
                       }

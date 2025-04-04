@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart'; // Adicione esta importação
 import '../../services/firestore_service.dart';
 import '../../data/noticia_model.dart';
 import '../../data/autor_model.dart';
@@ -38,17 +39,69 @@ class NewsDetailScreen extends StatelessWidget {
 
               String autorNome = autorSnapshot.data?.nome ?? "Autor desconhecido";
 
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(noticia.titulo, style: Theme.of(context).textTheme.headlineSmall),
-                    const SizedBox(height: 8),
-                    Text("Por $autorNome", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 16),
-                    Text(noticia.texto, style: const TextStyle(fontSize: 16)),
-                  ],
+              return SingleChildScrollView( // Adicionado para permitir o scroll
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: FutureBuilder<String?>(
+                    future: firestoreService.getCategoriaNomeById(noticia.categorias[0]),
+                    builder: (context, categoriaSnapshot) {
+                      if (categoriaSnapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (categoriaSnapshot.hasError || !categoriaSnapshot.hasData) {
+                        return const Text(
+                          "Categoria desconhecida",
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
+                        );
+                      }
+
+                      String categoriaNome = categoriaSnapshot.data ?? "Categoria desconhecida";
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(noticia.titulo, style: Theme.of(context).textTheme.headlineSmall),
+                          const SizedBox(height: 8),
+                          Text(
+                            "Categoria: $categoriaNome",
+                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
+                          ),
+                          const SizedBox(height: 8),
+                          Text("Por $autorNome", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                          const SizedBox(height: 16),
+                          FutureBuilder<String?>(
+                            future: firestoreService.getImagemUrlById(noticia.imagens[0]), // Busca a URL da imagem pelo ID
+                            builder: (context, imageSnapshot) {
+                              if (imageSnapshot.connectionState == ConnectionState.waiting) {
+                                return const Center(child: CircularProgressIndicator());
+                              }
+                              if (imageSnapshot.hasError || !imageSnapshot.hasData) {
+                                return Image.asset(
+                                  'assets/images/default_image.jpg', // Imagem padrão em caso de erro
+                                  fit: BoxFit.cover,
+                                );
+                              }
+
+                              String imageUrl = imageSnapshot.data!;
+
+                              return Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'assets/images/default_image.jpg', // Imagem padrão em caso de erro
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          Text(noticia.texto, style: const TextStyle(fontSize: 16)),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               );
             },
