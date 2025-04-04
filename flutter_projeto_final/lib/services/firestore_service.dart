@@ -105,6 +105,7 @@ class FirestoreService {
           .limit(1)
           .get();
 
+
       if (querySnapshot.docs.isNotEmpty) {
         var docId = querySnapshot.docs.first.id;
         await _db.collection('noticias').doc(docId).update(novosDados);
