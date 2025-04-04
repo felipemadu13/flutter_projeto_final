@@ -170,6 +170,20 @@ class _NewsFormScreenState extends State<NewsFormScreen> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
+
+      // Validação das datas
+      if (_dataInicioValidade != null &&
+          _dataFimValidade != null &&
+          _dataInicioValidade!.isAfter(_dataFimValidade!)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('A data de início não pode ser maior que a data de fim'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
       try {
         List<Map<String, dynamic>> _categorias = [];
         // Obtém o usuário atual
